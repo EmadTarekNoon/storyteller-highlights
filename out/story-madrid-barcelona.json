@@ -1,0 +1,166 @@
+{
+  "story_id": "story-88a8e36eb6ee",
+  "title": "Real Madrid vs Barcelona",
+  "source": "madrid-barcelona.json",
+  "created_at": "2026-08-12T17:30:28Z",
+  "metrics": {
+    "final_score": {
+      "home": 3,
+      "away": 1,
+      "home_team": "Real Madrid",
+      "away_team": "Barcelona"
+    },
+    "goals": 4,
+    "event_counts": {
+      "lineup": 1,
+      "start": 2,
+      "miss": 2,
+      "post": 1,
+      "goal": 4,
+      "corner": 2,
+      "attempt blocked": 1,
+      "yellow card": 2,
+      "end 1": 1,
+      "attempt saved": 1,
+      "substitution": 1,
+      "end 2": 1
+    },
+    "total_events": 19
+  },
+  "pages": [
+    {
+      "type": "cover",
+      "headline": "Real Madrid 3-1 Barcelona",
+      "image": "assets/21521989.jpg",
+      "subheadline": "LaLiga | Santiago Bernabeu | 2025-12-21"
+    },
+    {
+      "type": "highlight",
+      "minute": 6,
+      "headline": "6' Big chance - Real Madrid",
+      "caption": "Attempt missed. Kylian Mbappe (Real Madrid) right footed shot from outside the box is high and wide to the right.",
+      "image": "assets/21522345.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 12,
+      "headline": "12' Big chance - Barcelona",
+      "caption": "Robert Lewandowski (Barcelona) hits the crossbar with a header from the centre of the box.",
+      "image": "assets/21522414.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 18,
+      "headline": "18' GOAL - Real Madrid 1-0 Barcelona",
+      "caption": "Vinicius Junior (Real Madrid) left footed shot from the left side of the box to the far corner. Assisted by Kylian Mbappe with a through ball. Real Madrid 1-0 Barcelona.",
+      "image": "assets/21522450.jpg",
+      "explanation": "Goal at 18' made it Real Madrid 1-0 Barcelona."
+    },
+    {
+      "type": "highlight",
+      "minute": 29,
+      "headline": "29' Big chance - Barcelona",
+      "caption": "Attempt blocked. Raphinha (Barcelona) left footed shot from the centre of the box is blocked.",
+      "image": "assets/21522328.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 35,
+      "headline": "35' Yellow card",
+      "caption": "Aurelien Tchouameni (Real Madrid) is booked.",
+      "image": "assets/21522436.jpg",
+      "explanation": "Disciplinary moment."
+    },
+    {
+      "type": "highlight",
+      "minute": 41,
+      "headline": "41' Big chance - Barcelona",
+      "caption": "Attempt missed. Lamine Yamal (Barcelona) right footed shot from the right side of the box is close, but misses to the right.",
+      "image": "assets/21522449.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 55,
+      "headline": "55' GOAL - Real Madrid 2-0 Barcelona",
+      "caption": "Jude Bellingham (Real Madrid) right footed shot from the centre of the box. Assisted by Kylian Mbappe. Real Madrid 2-0 Barcelona.",
+      "image": "assets/21522014.jpg",
+      "explanation": "Goal at 55' made it Real Madrid 2-0 Barcelona."
+    },
+    {
+      "type": "highlight",
+      "minute": 63,
+      "headline": "63' Big chance - Barcelona",
+      "caption": "Attempt saved. Raphinha (Barcelona) right footed shot from outside the box is saved in the bottom left corner.",
+      "image": "assets/21522412.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 77,
+      "headline": "77' GOAL - Real Madrid 2-1 Barcelona",
+      "caption": "Robert Lewandowski (Barcelona) header from the centre of the box. Assisted by Lamine Yamal with a cross. Real Madrid 2-1 Barcelona.",
+      "image": "assets/21522140.jpg",
+      "explanation": "Goal at 77' made it Real Madrid 2-1 Barcelona."
+    },
+    {
+      "type": "highlight",
+      "minute": 90,
+      "headline": "90' GOAL - Real Madrid 3-1 Barcelona",
+      "caption": "Kylian Mbappe (Real Madrid) left footed shot to the bottom right corner after a fast break. Assisted by Jude Bellingham. Real Madrid 3-1 Barcelona.",
+      "image": "assets/21522345.jpg",
+      "explanation": "Goal at 90' made it Real Madrid 3-1 Barcelona."
+    },
+    {
+      "type": "info",
+      "headline": "Full time",
+      "home_team": "Real Madrid",
+      "away_team": "Barcelona",
+      "home_code": "RMA",
+      "away_code": "FCB",
+      "home_score": 3,
+      "away_score": 1,
+      "stats": [
+        {
+          "label": "Goals",
+          "home": 3,
+          "away": 1
+        },
+        {
+          "label": "Shots",
+          "home": 4,
+          "away": 5
+        },
+        {
+          "label": "On target",
+          "home": 3,
+          "away": 2
+        },
+        {
+          "label": "Corners",
+          "home": 1,
+          "away": 1
+        },
+        {
+          "label": "Offsides",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "label": "Fouls",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "label": "Yellow cards",
+          "home": 1,
+          "away": 1
+        }
+      ],
+      "body": "Goals: 3 - 1\nShots: 4 - 5\nOn target: 3 - 2\nCorners: 1 - 1\nOffsides: 0 - 0\nFouls: 0 - 0\nYellow cards: 1 - 1"
+    }
+  ]
+}

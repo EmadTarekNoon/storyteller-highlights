@@ -1,0 +1,42 @@
+{
+  "matchInfo": {
+    "id": "example-ars-liv",
+    "localDate": "2025-10-26",
+    "sport": { "id": "soccer", "name": "Soccer" },
+    "competition": { "name": "Premier League", "knownName": "Premier League" },
+    "venue": { "longName": "Emirates Stadium" },
+    "contestant": [
+      { "id": "ARS", "name": "Arsenal", "code": "ARS", "position": "home" },
+      { "id": "LIV", "name": "Liverpool", "code": "LIV", "position": "away" }
+    ]
+  },
+  "messages": [
+    {
+      "language": "en-gb",
+      "message": [
+        { "id": "e30", "type": "end 14", "period": "14", "minute": "0", "second": "0", "teamRef1": "ARS", "comment": "Match ends, Arsenal 2, Liverpool 2." },
+        { "id": "e29", "type": "end 2", "period": "2", "minute": "94", "second": "0", "teamRef1": "ARS", "comment": "Second Half ends, Arsenal 2, Liverpool 2." },
+        { "id": "e28", "type": "penalty goal", "period": "2", "minute": "88", "second": "20", "teamRef1": "LIV", "comment": "Goal! Arsenal 2, Liverpool 2. Mohamed Salah (Liverpool) converts the penalty with a right footed shot to the bottom left corner." },
+        { "id": "e27", "type": "penalty won", "period": "2", "minute": "87", "second": "40", "teamRef1": "LIV", "comment": "Penalty Liverpool. Cody Gakpo draws a foul in the penalty area." },
+        { "id": "e26", "type": "penalty lost", "period": "2", "minute": "87", "second": "40", "teamRef1": "ARS", "comment": "Penalty conceded by William Saliba (Arsenal) after a foul in the penalty area." },
+        { "id": "e25", "type": "yellow card", "period": "2", "minute": "80", "second": "5", "teamRef1": "ARS", "comment": "Declan Rice (Arsenal) is shown the yellow card for a bad foul." },
+        { "id": "e24", "type": "substitution", "period": "2", "minute": "72", "second": "0", "teamRef1": "ARS", "comment": "Substitution, Arsenal. Kai Havertz replaces Gabriel Jesus." },
+        { "id": "e23", "type": "attempt saved", "period": "2", "minute": "66", "second": "12", "teamRef1": "LIV", "comment": "Attempt saved. Luis Diaz (Liverpool) left footed shot from the centre of the box is saved in the top centre of the goal." },
+        { "id": "e22", "type": "goal", "period": "2", "minute": "58", "second": "33", "teamRef1": "ARS", "comment": "Goal! Arsenal 2, Liverpool 1. Martin Odegaard (Arsenal) right footed shot from the centre of the box. Assisted by Bukayo Saka." },
+        { "id": "e21", "type": "corner", "period": "2", "minute": "52", "second": "10", "teamRef1": "LIV", "comment": "Corner, Arsenal. Conceded by Virgil van Dijk." },
+        { "id": "e20", "type": "start", "period": "2", "minute": "45", "second": "0", "teamRef1": "ARS", "comment": "Second Half begins Arsenal 1, Liverpool 1." },
+        { "id": "e19", "type": "end 1", "period": "1", "minute": "47", "second": "0", "teamRef1": "ARS", "comment": "First Half ends, Arsenal 1, Liverpool 1." },
+        { "id": "e18", "type": "goal", "period": "1", "minute": "44", "second": "2", "teamRef1": "LIV", "comment": "Goal! Arsenal 1, Liverpool 1. Mohamed Salah (Liverpool) right footed shot from the right side of the box to the bottom left corner. Assisted by Trent Alexander-Arnold." },
+        { "id": "e17", "type": "miss", "period": "1", "minute": "38", "second": "45", "teamRef1": "LIV", "comment": "Attempt missed. Darwin Nunez (Liverpool) header from the centre of the box misses to the left." },
+        { "id": "e16", "type": "yellow card", "period": "1", "minute": "31", "second": "18", "teamRef1": "LIV", "comment": "Ryan Gravenberch (Liverpool) is shown the yellow card." },
+        { "id": "e15", "type": "corner", "period": "1", "minute": "27", "second": "5", "teamRef1": "ARS", "comment": "Corner, Liverpool. Conceded by Ben White." },
+        { "id": "e14", "type": "attempt blocked", "period": "1", "minute": "22", "second": "40", "teamRef1": "ARS", "comment": "Attempt blocked. Gabriel Martinelli (Arsenal) left footed shot from the left side of the box is blocked." },
+        { "id": "e13", "type": "post", "period": "1", "minute": "15", "second": "30", "teamRef1": "ARS", "comment": "Bukayo Saka (Arsenal) hits the right post with a curling right footed shot from the right side of the box." },
+        { "id": "e12", "type": "goal", "period": "1", "minute": "7", "second": "51", "teamRef1": "ARS", "comment": "Goal! Arsenal 1, Liverpool 0. Bukayo Saka (Arsenal) right footed shot from the right side of the box to the bottom left corner. Assisted by Martin Odegaard." },
+        { "id": "e11", "type": "corner", "period": "1", "minute": "4", "second": "12", "teamRef1": "LIV", "comment": "Corner, Arsenal. Conceded by Ibrahima Konate." },
+        { "id": "e10", "type": "start", "period": "1", "minute": "0", "second": "0", "teamRef1": "ARS", "comment": "First Half begins." },
+        { "id": "e09", "type": "lineup", "period": "1", "minute": "0", "second": "0", "teamRef1": "ARS", "comment": "Lineups are announced and players are warming up." }
+      ]
+    }
+  ]
+}

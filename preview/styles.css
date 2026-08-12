@@ -188,8 +188,80 @@ html, body {
 
 /* Info page: solid panel, no photo */
 .page.info { justify-content: center; }
-.page.info .bg { background: linear-gradient(160deg, #12203a, #0a1526); }
-.page.info .content { padding: 40px 26px; }
+.page.info .bg {
+  background:
+    radial-gradient(120% 80% at 50% -10%, rgba(22, 196, 127, 0.22), transparent 60%),
+    linear-gradient(160deg, #14243f 0%, #0a1526 60%, #070d18 100%);
+}
+.page.info .content { padding: 34px 24px; }
+
+.kicker {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 18px;
+}
+
+/* Scoreboard */
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 26px;
+}
+.scoreboard .team { text-align: center; }
+.scoreboard .team .code {
+  display: inline-block;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  padding: 10px 0;
+}
+.scoreboard .score {
+  font-size: 40px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  text-shadow: 0 2px 16px rgba(0, 0, 0, 0.6);
+}
+
+/* Comparison stat bars */
+.stats { display: flex; flex-direction: column; gap: 14px; }
+.stat .stat-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.stat .stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.stat .bar {
+  position: relative;
+  height: 6px;
+  border-radius: 6px;
+  background: #d64545; /* away colour (right) */
+  overflow: hidden;
+}
+.stat .bar > i {
+  display: block;
+  height: 100%;
+  background: var(--accent); /* home colour (left) */
+  border-radius: 6px 0 0 6px;
+  transition: width 0.4s ease;
+}
+
+/* Text fallback if structured stats are absent */
 .page.info .body {
   white-space: pre-line;
   font-size: 16px;

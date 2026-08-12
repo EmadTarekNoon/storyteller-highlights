@@ -1,8 +1,8 @@
 {
-  "story_id": "story-1f5e97f65a96",
+  "story_id": "story-acfcaac128eb",
   "title": "Celtic vs Kilmarnock",
   "source": "match_events.json",
-  "created_at": "2026-08-12T15:53:55Z",
+  "created_at": "2026-08-12T17:25:25Z",
   "metrics": {
     "final_score": {
       "home": 4,
@@ -125,8 +125,51 @@
     },
     {
       "type": "info",
-      "headline": "Match stats",
-      "body": "Final score: Celtic 4-0 Kilmarnock\nShots (on/off/blocked): 4/8/6\nCorners: 15\nYellow cards: 4\nSubstitutions: 10"
+      "headline": "Full time",
+      "home_team": "Celtic",
+      "away_team": "Kilmarnock",
+      "home_code": "CEL",
+      "away_code": "KIL",
+      "home_score": 4,
+      "away_score": 0,
+      "stats": [
+        {
+          "label": "Goals",
+          "home": 4,
+          "away": 0
+        },
+        {
+          "label": "Shots",
+          "home": 21,
+          "away": 3
+        },
+        {
+          "label": "On target",
+          "home": 7,
+          "away": 1
+        },
+        {
+          "label": "Corners",
+          "home": 8,
+          "away": 7
+        },
+        {
+          "label": "Offsides",
+          "home": 0,
+          "away": 3
+        },
+        {
+          "label": "Fouls",
+          "home": 14,
+          "away": 3
+        },
+        {
+          "label": "Yellow cards",
+          "home": 2,
+          "away": 2
+        }
+      ],
+      "body": "Goals: 4 - 0\nShots: 21 - 3\nOn target: 7 - 1\nCorners: 8 - 7\nOffsides: 0 - 3\nFouls: 14 - 3\nYellow cards: 2 - 2"
     }
   ]
 }

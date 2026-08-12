@@ -110,22 +110,63 @@ class SoccerProfile(SportProfile):
         return {"headline": winner, "subheadline": " | ".join(subparts)}
 
     def info_pages(self, match: Match, final: Score, events: list[Event]) -> list[dict]:
-        counts = _count_types(events)
-        stats_lines = [
-            f"Final score: {_scoreline(match, final)}",
-            f"Shots (on/off/blocked): {counts.get('attempt saved', 0)}/"
-            f"{counts.get('miss', 0)}/{counts.get('attempt blocked', 0)}",
-            f"Corners: {counts.get('corner', 0)}",
-            f"Yellow cards: {counts.get('yellow card', 0)}",
-            f"Substitutions: {counts.get('substitution', 0)}",
+        home_counts = self._side_counts(match, events, "home")
+        away_counts = self._side_counts(match, events, "away")
+
+        # Each row is a home-vs-away comparison the viewer renders as a
+        # scoreboard-style stat bar. Kept as structured data (schema allows
+        # additional properties) plus a plain-text `body` fallback.
+        rows = [
+            ("Goals", final.home, final.away),
+            ("Shots", home_counts["shots"], away_counts["shots"]),
+            ("On target", home_counts["on_target"], away_counts["on_target"]),
+            ("Corners", home_counts["corner"], away_counts["corner"]),
+            ("Offsides", home_counts["offside"], away_counts["offside"]),
+            ("Fouls", home_counts["fouls"], away_counts["fouls"]),
+            ("Yellow cards", home_counts["yellow"], away_counts["yellow"]),
         ]
+        stats = [{"label": label, "home": h, "away": a} for label, h, a in rows]
+        body = "\n".join(f"{label}: {h} - {a}" for label, h, a in rows)
+
         return [
             {
                 "type": "info",
-                "headline": "Match stats",
-                "body": "\n".join(stats_lines),
+                "headline": "Full time",
+                "home_team": match.home.name if match.home else "Home",
+                "away_team": match.away.name if match.away else "Away",
+                "home_code": (match.home.code if match.home else "") or "HOME",
+                "away_code": (match.away.code if match.away else "") or "AWAY",
+                "home_score": final.home,
+                "away_score": final.away,
+                "stats": stats,
+                "body": body,
             }
         ]
+
+    def _side_counts(self, match: Match, events: list[Event], side: str) -> dict[str, int]:
+        shot_types = {"goal", "penalty goal", "miss", "attempt saved", "attempt blocked", "post"}
+        on_target_types = {"goal", "penalty goal", "attempt saved"}
+        other = "away" if side == "home" else "home"
+        c = {"shots": 0, "on_target": 0, "corner": 0, "offside": 0, "fouls": 0, "yellow": 0}
+        for e in events:
+            event_side = self.side_of(e, match)
+            # For corners the feed's teamRef1 is the *conceding* team, so a
+            # corner belongs to the opposite side.
+            if e.type == "corner" and event_side == other:
+                c["corner"] += 1
+            if event_side != side:
+                continue
+            if e.type in shot_types:
+                c["shots"] += 1
+            if e.type in on_target_types:
+                c["on_target"] += 1
+            if e.type == "offside":
+                c["offside"] += 1
+            if e.type == "free kick lost":  # team that conceded the free kick == foul
+                c["fouls"] += 1
+            if e.type in ("yellow card", "second yellow card"):
+                c["yellow"] += 1
+        return c
 
     def metrics(self, match: Match, final: Score, events: list[Event]) -> dict:
         counts = _count_types(events)

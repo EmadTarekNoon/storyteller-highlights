@@ -115,8 +115,7 @@
       content.appendChild(h1(page.headline));
       if (page.subheadline) content.appendChild(div("sub", page.subheadline));
     } else if (page.type === "info") {
-      content.appendChild(h1(page.headline));
-      if (page.body) content.appendChild(div("body", page.body));
+      renderInfo(content, page);
     } else {
       if (typeof page.minute === "number") {
         content.appendChild(badge("minute", page.minute + "'"));
@@ -129,6 +128,63 @@
     node.appendChild(content);
     el.stage.innerHTML = "";
     el.stage.appendChild(node);
+  }
+
+  // Info page: a full-time scoreboard + home-vs-away stat comparison when the
+  // structured fields are present; otherwise a simple text panel.
+  function renderInfo(content, page) {
+    content.appendChild(div("kicker", page.headline || "Summary"));
+
+    if (page.home_team && page.away_team && typeof page.home_score === "number") {
+      var board = document.createElement("div");
+      board.className = "scoreboard";
+      board.appendChild(teamCol(page.home_code || page.home_team, page.home_team));
+      var score = document.createElement("div");
+      score.className = "score";
+      score.textContent = page.home_score + " – " + page.away_score;
+      board.appendChild(score);
+      board.appendChild(teamCol(page.away_code || page.away_team, page.away_team));
+      content.appendChild(board);
+    }
+
+    if (Array.isArray(page.stats) && page.stats.length) {
+      var table = document.createElement("div");
+      table.className = "stats";
+      page.stats.forEach(function (row) {
+        table.appendChild(statRow(row));
+      });
+      content.appendChild(table);
+    } else if (page.body) {
+      content.appendChild(div("body", page.body));
+    }
+  }
+
+  function teamCol(code, name) {
+    var col = document.createElement("div");
+    col.className = "team";
+    col.innerHTML = "<span class='code'>" + escapeHtml(code) + "</span>";
+    return col;
+  }
+
+  function statRow(row) {
+    var home = Number(row.home) || 0;
+    var away = Number(row.away) || 0;
+    var total = home + away;
+    var hPct = total ? Math.round((home / total) * 100) : 50;
+    var wrap = document.createElement("div");
+    wrap.className = "stat";
+    wrap.innerHTML =
+      "<div class='stat-top'><span>" + home + "</span>" +
+      "<span class='stat-label'>" + escapeHtml(row.label) + "</span>" +
+      "<span>" + away + "</span></div>" +
+      "<div class='bar'><i style='width:" + hPct + "%'></i></div>";
+    return wrap;
+  }
+
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>\"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
   }
 
   function applyImage(node, url) {

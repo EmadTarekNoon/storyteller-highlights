@@ -1,0 +1,40 @@
+{
+  "matchInfo": {
+    "id": "example-rma-fcb",
+    "localDate": "2025-12-21",
+    "sport": { "id": "soccer", "name": "Soccer" },
+    "competition": { "name": "LaLiga", "knownName": "LaLiga" },
+    "venue": { "longName": "Santiago Bernabeu" },
+    "contestant": [
+      { "id": "RMA", "name": "Real Madrid", "code": "RMA", "position": "home" },
+      { "id": "FCB", "name": "Barcelona", "code": "FCB", "position": "away" }
+    ]
+  },
+  "messages": [
+    {
+      "language": "en-gb",
+      "message": [
+        { "id": "c26", "type": "end 14", "period": "14", "minute": "0", "second": "0", "teamRef1": "RMA", "comment": "Match ends, Real Madrid 3, Barcelona 1." },
+        { "id": "c25", "type": "end 2", "period": "2", "minute": "92", "second": "0", "teamRef1": "RMA", "comment": "Second Half ends, Real Madrid 3, Barcelona 1." },
+        { "id": "c24", "type": "goal", "period": "2", "minute": "90", "second": "12", "teamRef1": "RMA", "comment": "Goal! Real Madrid 3, Barcelona 1. Kylian Mbappe (Real Madrid) left footed shot to the bottom right corner after a fast break. Assisted by Jude Bellingham." },
+        { "id": "c23", "type": "yellow card", "period": "2", "minute": "84", "second": "40", "teamRef1": "FCB", "comment": "Pedri (Barcelona) is shown the yellow card." },
+        { "id": "c22", "type": "goal", "period": "2", "minute": "77", "second": "5", "teamRef1": "FCB", "comment": "Goal! Real Madrid 2, Barcelona 1. Robert Lewandowski (Barcelona) header from the centre of the box. Assisted by Lamine Yamal with a cross." },
+        { "id": "c21", "type": "substitution", "period": "2", "minute": "70", "second": "0", "teamRef1": "RMA", "comment": "Substitution, Real Madrid. Rodrygo replaces Vinicius Junior." },
+        { "id": "c20", "type": "attempt saved", "period": "2", "minute": "63", "second": "22", "teamRef1": "FCB", "comment": "Attempt saved. Raphinha (Barcelona) right footed shot from outside the box is saved in the bottom left corner." },
+        { "id": "c19", "type": "goal", "period": "2", "minute": "55", "second": "48", "teamRef1": "RMA", "comment": "Goal! Real Madrid 2, Barcelona 0. Jude Bellingham (Real Madrid) right footed shot from the centre of the box. Assisted by Kylian Mbappe." },
+        { "id": "c18", "type": "corner", "period": "2", "minute": "49", "second": "3", "teamRef1": "RMA", "comment": "Corner, Barcelona. Conceded by Antonio Rudiger." },
+        { "id": "c17", "type": "start", "period": "2", "minute": "45", "second": "0", "teamRef1": "RMA", "comment": "Second Half begins Real Madrid 1, Barcelona 0." },
+        { "id": "c16", "type": "end 1", "period": "1", "minute": "46", "second": "0", "teamRef1": "RMA", "comment": "First Half ends, Real Madrid 1, Barcelona 0." },
+        { "id": "c15", "type": "miss", "period": "1", "minute": "41", "second": "16", "teamRef1": "FCB", "comment": "Attempt missed. Lamine Yamal (Barcelona) right footed shot from the right side of the box is close, but misses to the right." },
+        { "id": "c14", "type": "yellow card", "period": "1", "minute": "35", "second": "9", "teamRef1": "RMA", "comment": "Aurelien Tchouameni (Real Madrid) is shown the yellow card for a tactical foul." },
+        { "id": "c13", "type": "attempt blocked", "period": "1", "minute": "29", "second": "50", "teamRef1": "FCB", "comment": "Attempt blocked. Raphinha (Barcelona) left footed shot from the centre of the box is blocked." },
+        { "id": "c12", "type": "corner", "period": "1", "minute": "24", "second": "31", "teamRef1": "FCB", "comment": "Corner, Real Madrid. Conceded by Jules Kounde." },
+        { "id": "c11", "type": "goal", "period": "1", "minute": "18", "second": "27", "teamRef1": "RMA", "comment": "Goal! Real Madrid 1, Barcelona 0. Vinicius Junior (Real Madrid) left footed shot from the left side of the box to the far corner. Assisted by Kylian Mbappe with a through ball." },
+        { "id": "c10", "type": "post", "period": "1", "minute": "12", "second": "44", "teamRef1": "FCB", "comment": "Robert Lewandowski (Barcelona) hits the crossbar with a header from the centre of the box." },
+        { "id": "c09", "type": "miss", "period": "1", "minute": "6", "second": "2", "teamRef1": "RMA", "comment": "Attempt missed. Kylian Mbappe (Real Madrid) right footed shot from outside the box is high and wide to the right." },
+        { "id": "c08", "type": "start", "period": "1", "minute": "0", "second": "0", "teamRef1": "RMA", "comment": "First Half begins." },
+        { "id": "c07", "type": "lineup", "period": "1", "minute": "0", "second": "0", "teamRef1": "RMA", "comment": "Lineups are announced and players are warming up." }
+      ]
+    }
+  ]
+}

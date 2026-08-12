@@ -1,0 +1,169 @@
+{
+  "story_id": "story-9d089630cfce",
+  "title": "Arsenal vs Liverpool",
+  "source": "arsenal-liverpool.json",
+  "created_at": "2026-08-12T17:30:28Z",
+  "metrics": {
+    "final_score": {
+      "home": 2,
+      "away": 2,
+      "home_team": "Arsenal",
+      "away_team": "Liverpool"
+    },
+    "goals": 4,
+    "event_counts": {
+      "lineup": 1,
+      "start": 2,
+      "corner": 3,
+      "goal": 3,
+      "post": 1,
+      "attempt blocked": 1,
+      "yellow card": 2,
+      "miss": 1,
+      "end 1": 1,
+      "attempt saved": 1,
+      "substitution": 1,
+      "penalty lost": 1,
+      "penalty won": 1,
+      "penalty goal": 1,
+      "end 2": 1
+    },
+    "total_events": 21
+  },
+  "pages": [
+    {
+      "type": "cover",
+      "headline": "Arsenal 2-2 Liverpool",
+      "image": "assets/21521989.jpg",
+      "subheadline": "Premier League | Emirates Stadium | 2025-10-26"
+    },
+    {
+      "type": "highlight",
+      "minute": 7,
+      "headline": "7' GOAL - Arsenal 1-0 Liverpool",
+      "caption": "Bukayo Saka (Arsenal) right footed shot from the right side of the box to the bottom left corner. Assisted by Martin Odegaard. Arsenal 1-0 Liverpool.",
+      "image": "assets/21522450.jpg",
+      "explanation": "Goal at 7' made it Arsenal 1-0 Liverpool."
+    },
+    {
+      "type": "highlight",
+      "minute": 15,
+      "headline": "15' Big chance - Arsenal",
+      "caption": "Bukayo Saka (Arsenal) hits the right post with a curling right footed shot from the right side of the box.",
+      "image": "assets/21522436.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 22,
+      "headline": "22' Big chance - Arsenal",
+      "caption": "Attempt blocked. Gabriel Martinelli (Arsenal) left footed shot from the left side of the box is blocked.",
+      "image": "assets/21521990.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 38,
+      "headline": "38' Big chance - Liverpool",
+      "caption": "Attempt missed. Darwin Nunez (Liverpool) header from the centre of the box misses to the left.",
+      "image": "assets/21522140.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 44,
+      "headline": "44' GOAL - Arsenal 1-1 Liverpool",
+      "caption": "Mohamed Salah (Liverpool) right footed shot from the right side of the box to the bottom left corner. Assisted by Trent Alexander-Arnold. Arsenal 1-1 Liverpool.",
+      "image": "assets/21522414.jpg",
+      "explanation": "Goal at 44' made it Arsenal 1-1 Liverpool."
+    },
+    {
+      "type": "highlight",
+      "minute": 58,
+      "headline": "58' GOAL - Arsenal 2-1 Liverpool",
+      "caption": "Martin Odegaard (Arsenal) right footed shot from the centre of the box. Assisted by Bukayo Saka. Arsenal 2-1 Liverpool.",
+      "image": "assets/21522328.jpg",
+      "explanation": "Goal at 58' made it Arsenal 2-1 Liverpool."
+    },
+    {
+      "type": "highlight",
+      "minute": 66,
+      "headline": "66' Big chance - Liverpool",
+      "caption": "Attempt saved. Luis Diaz (Liverpool) left footed shot from the centre of the box is saved in the top centre of the goal.",
+      "image": "assets/21522449.jpg",
+      "explanation": "A notable goalscoring chance."
+    },
+    {
+      "type": "highlight",
+      "minute": 87,
+      "headline": "87' Penalty decision",
+      "caption": "Penalty conceded by William Saliba (Arsenal) after a foul in the penalty area.",
+      "image": "assets/21522328.jpg",
+      "explanation": "Penalty-box drama."
+    },
+    {
+      "type": "highlight",
+      "minute": 87,
+      "headline": "87' Penalty awarded",
+      "caption": "Penalty Liverpool. Cody Gakpo draws a foul in the penalty area.",
+      "image": "assets/21522413.jpg",
+      "explanation": "Penalty-box drama."
+    },
+    {
+      "type": "highlight",
+      "minute": 88,
+      "headline": "88' PENALTY GOAL - Arsenal 2-2 Liverpool",
+      "caption": "Mohamed Salah (Liverpool) converts the penalty with a right footed shot to the bottom left corner. Arsenal 2-2 Liverpool.",
+      "image": "assets/21522345.jpg",
+      "explanation": "Goal at 88' made it Arsenal 2-2 Liverpool."
+    },
+    {
+      "type": "info",
+      "headline": "Full time",
+      "home_team": "Arsenal",
+      "away_team": "Liverpool",
+      "home_code": "ARS",
+      "away_code": "LIV",
+      "home_score": 2,
+      "away_score": 2,
+      "stats": [
+        {
+          "label": "Goals",
+          "home": 2,
+          "away": 2
+        },
+        {
+          "label": "Shots",
+          "home": 4,
+          "away": 4
+        },
+        {
+          "label": "On target",
+          "home": 2,
+          "away": 3
+        },
+        {
+          "label": "Corners",
+          "home": 2,
+          "away": 1
+        },
+        {
+          "label": "Offsides",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "label": "Fouls",
+          "home": 0,
+          "away": 0
+        },
+        {
+          "label": "Yellow cards",
+          "home": 1,
+          "away": 1
+        }
+      ],
+      "body": "Goals: 2 - 2\nShots: 4 - 4\nOn target: 2 - 3\nCorners: 2 - 1\nOffsides: 0 - 0\nFouls: 0 - 0\nYellow cards: 1 - 1"
+    }
+  ]
+}
