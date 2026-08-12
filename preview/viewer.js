@@ -32,6 +32,7 @@
     tapPrev: document.getElementById("tapPrev"),
     tapNext: document.getElementById("tapNext"),
     phone: document.getElementById("phone"),
+    status: document.getElementById("status"),
   };
 
   var state = { pages: [], index: 0, timer: null, start: 0, elapsed: 0, paused: false };
@@ -81,10 +82,18 @@
   function go(i) {
     if (i < 0 || i >= state.pages.length) return;
     state.index = i;
-    render(state.pages[i]);
+    var page = state.pages[i];
+    render(page);
     updateProgressMarks();
     el.counter.textContent = i + 1 + " / " + state.pages.length;
+    announce(i, page);
     restartTimer();
+  }
+
+  function announce(i, page) {
+    if (!el.status) return;
+    var label = page.headline || (page.type || "page");
+    el.status.textContent = "Page " + (i + 1) + " of " + state.pages.length + ": " + label;
   }
 
   function next() { state.index < state.pages.length - 1 ? go(state.index + 1) : stopTimer(true); }
@@ -200,8 +209,12 @@
   function updateProgressMarks() {
     var segs = el.progress.children;
     for (var i = 0; i < segs.length; i++) {
-      segs[i].classList.toggle("done", i < state.index);
-      if (i > state.index) segs[i].querySelector("i").style.width = "0%";
+      var done = i < state.index;
+      segs[i].classList.toggle("done", done);
+      // Set the fill explicitly: an inline width from tick() would otherwise
+      // override the .done CSS and leave a skipped bar stuck mid-fill.
+      segs[i].querySelector("i").style.width = done ? "100%" : "0%";
+      segs[i].setAttribute("aria-current", i === state.index ? "true" : "false");
     }
   }
 
@@ -234,6 +247,7 @@
   function setPaused(paused) {
     state.paused = paused;
     el.playPause.textContent = paused ? "►" : "❚❚";
+    el.playPause.setAttribute("aria-label", paused ? "Play" : "Pause");
     if (paused) {
       state.elapsed += performance.now() - state.start;
       stopTimer(false);
@@ -252,6 +266,8 @@
     document.addEventListener("keydown", function (e) {
       if (e.key === "ArrowRight") next();
       else if (e.key === "ArrowLeft") prev();
+      else if (e.key === "Home") { e.preventDefault(); go(0); }
+      else if (e.key === "End") { e.preventDefault(); go(state.pages.length - 1); }
       else if (e.key === " ") { e.preventDefault(); setPaused(!state.paused); }
     });
 

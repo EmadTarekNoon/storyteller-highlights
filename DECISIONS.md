@@ -56,11 +56,38 @@ sports**.
 - Output fields: `story_id`, `title`, `source`, `created_at` (ISO-8601 UTC),
   `metrics` (final score, goal count, per-type counts), and `pages`.
 - Pages: exactly one `cover` first, chronological `highlight` pages, then an
-  `info` "Match stats" page.
+  `info` "Full time" summary page.
 - Invariants enforced by tests: first page is `cover`; highlights have
   int `minute` + `headline` + `caption`; highlight minutes are non-decreasing;
   running score is monotonic; all goals appear; the Story validates against the
   schema.
+
+## Full-time summary page
+The closing `info` page carries a structured home-vs-away comparison
+(Goals, Shots, On target, Corners, Offsides, Fouls, Yellow cards) alongside a
+plain-text `body` fallback. The JSON Schema allows additional properties on
+`info` pages, so the extra fields (`home_team`, `home_score`, `stats`, …) keep
+the Story valid while letting the viewer render a scoreboard + stat bars.
+- **Corner attribution fix:** in the source feed a `corner` event's `teamRef1`
+  is the *conceding* team (e.g. "Corner, Kilmarnock. Conceded by … (Celtic)" has
+  `teamRef1`=Celtic). We verified this from the data and credit corners to the
+  opposite side; shots/offsides/fouls are attributed to `teamRef1` as-is.
+
+## Story viewer (experience)
+- Full-bleed vertical "Stories" UI: cover, highlight (photo + minute badge +
+  caption), and the full-time summary rendered as a scoreboard with comparison
+  bars. Loads `out/story.json` (or `?story=<url>`), resolving asset paths
+  relative to the story file.
+- Autoplay with segmented progress bars; tap-zones, ←/→, Home/End, and
+  Space/press-and-hold controls. Progress fill is set explicitly per segment so
+  a *skipped* page's bar fills completely (an inline width was previously left
+  mid-animation and overrode the "done" style).
+- Long captions are clamped in CSS (full text stays in the JSON) so a slide
+  never overflows.
+- **Accessibility:** labelled story region, `aria-live` page announcements
+  ("Page X of Y — headline"), `aria-current` on the active segment, dynamic
+  play/pause labels, visible `:focus-visible` outlines, and a
+  `prefers-reduced-motion` path that disables animation.
 
 ## Schema quirk (`pack_id` vs `story_id`)
 `schema/story.schema.json` lists `pack_id` in `required` but only defines
@@ -78,11 +105,12 @@ decoratively: a fixed cover image and a stable per-event pick (hash of the
 event) so the same event always gets the same picture, with a placeholder
 fallback. Documented as decorative, not event-accurate.
 
-## What I would do with 2 more hours
-- Add a second real profile (e.g. rugby/basketball) to exercise the profile seam
-  beyond the generic fallback.
-- Smarter narrative pacing (momentum/xG-style weighting, dedupe near-duplicate
-  penalty won/lost pairs into a single build-up).
-- Team crests/colours in the viewer driven by feed metadata; per-half section
-  dividers; share/export of a single page as an image.
-- Optional AI caption polish behind a flag, with the eval harness gating output.
+## What's next
+The prioritized backlog now lives in `docs/ROADMAP.md` (new sport profiles,
+externalized events configuration, deployment, viewer upgrades such as team
+colours/swipe/match-picker, optional AI caption polish, and an HTTP service).
+Short version of the highest-value items:
+- A second real profile (e.g. rugby/basketball) beyond the generic fallback.
+- Smarter narrative pacing (dedupe near-duplicate penalty won/lost into one
+  build-up; balance team/half representation).
+- Team crests/colours in the viewer driven by feed metadata.

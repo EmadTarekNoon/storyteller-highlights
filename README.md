@@ -39,7 +39,17 @@ sport-agnostic and everything specific lives behind two small seams:
   registry selects one from the feed's `sport.name`, with a `GenericProfile`
   fallback so unknown sports still produce a valid Story. New sport = new profile.
 
-See `DECISIONS.md` (design + data handling), `AI_USAGE.md`, and `EVALS.md`.
+Each Story is: a **cover**, a set of chronological **highlight** pages, and a
+**full-time summary** page (scoreboard + home-vs-away stat comparison). The
+viewer is a full-bleed vertical Stories UI with autoplay, segmented progress
+bars, keyboard/tap navigation, and accessibility support.
+
+### Documentation
+- `docs/FEATURES.md` — full list of current features + how to extend (add a
+  sport, add a feed adapter).
+- `docs/ROADMAP.md` — planned next features (new sports, events configuration,
+  deployment, viewer upgrades, AI captions, HTTP service, …).
+- `DECISIONS.md` — design rationale + data handling. `AI_USAGE.md`, `EVALS.md`.
 
 ### Setup
 ```bash
@@ -64,7 +74,19 @@ Serve from the repo root, then open the viewer:
 python -m http.server 8000
 # open http://localhost:8000/preview/
 ```
-Navigate with the side tap-zones or ← / → keys; Space (or press-and-hold) pauses.
+Controls: side tap-zones or ← / → to navigate, **Home/End** to jump to
+first/last, **Space** (or press-and-hold) to pause. Screen-reader live region
+announces each page; respects `prefers-reduced-motion`.
+
+### Try other matches
+Two extra synthetic soccer feeds live in `examples/`. Build and view them with
+the same viewer via the `?story=` query param:
+```bash
+python -m storybuilder --in examples/arsenal-liverpool.json --out out/story-arsenal-liverpool.json --pretty
+python -m storybuilder --in examples/madrid-barcelona.json  --out out/story-madrid-barcelona.json  --pretty
+# then open, e.g.:
+# http://localhost:8000/preview/?story=../out/story-arsenal-liverpool.json
+```
 
 ### Test
 ```bash

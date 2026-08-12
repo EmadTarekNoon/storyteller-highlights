@@ -8,7 +8,7 @@
 </head>
 <body>
   <div id="app">
-    <div class="phone" id="phone">
+    <div class="phone" id="phone" role="group" aria-roledescription="story" aria-label="Match story viewer">
       <!-- Segmented progress bars -->
       <div class="progress" id="progress" aria-hidden="true"></div>
 
@@ -18,18 +18,21 @@
         <span class="counter" id="counter"></span>
       </header>
 
-      <!-- The current page -->
-      <main class="stage" id="stage">
+      <!-- The current page (announced to assistive tech on change) -->
+      <main class="stage" id="stage" aria-live="polite" aria-atomic="true">
         <div class="loading" id="loading">Loading story…</div>
       </main>
 
+      <!-- Visually-hidden status for screen readers -->
+      <p class="visually-hidden" id="status" role="status" aria-live="polite"></p>
+
       <!-- Tap zones for prev/next -->
-      <button class="tap tap-prev" id="tapPrev" aria-label="Previous page"></button>
-      <button class="tap tap-next" id="tapNext" aria-label="Next page"></button>
+      <button type="button" class="tap tap-prev" id="tapPrev" aria-label="Previous page"></button>
+      <button type="button" class="tap tap-next" id="tapNext" aria-label="Next page"></button>
 
       <!-- Bottom chrome: play/pause + hint -->
       <footer class="bottombar">
-        <button class="ctrl" id="playPause" aria-label="Play or pause">❚❚</button>
+        <button type="button" class="ctrl" id="playPause" aria-label="Pause">❚❚</button>
         <span class="hint">Tap sides • ← → keys • Space to pause</span>
       </footer>
     </div>

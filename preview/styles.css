@@ -170,15 +170,26 @@ html, body {
 }
 .page .caption {
   font-size: 16px;
-  line-height: 1.45;
+  line-height: 1.4;
   color: #f2f4f8;
   text-shadow: 0 1px 10px rgba(0, 0, 0, 0.8);
+  /* Cap long commentary so it never overflows the slide (full text stays in JSON). */
+  display: -webkit-box;
+  -webkit-line-clamp: 5;
+  line-clamp: 5;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 .page .explain {
   margin-top: 12px;
   font-size: 12.5px;
   color: var(--muted);
   font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 /* Cover page centres its content */
@@ -293,4 +304,31 @@ html, body {
   color: #ff8080;
   font-size: 14px;
   line-height: 1.6;
+}
+
+/* --- Accessibility ------------------------------------------------------- */
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.tap:focus-visible,
+.ctrl:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: -3px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page { animation: none; }
+  .progress .seg > i,
+  .stat .bar > i { transition: none; }
 }
