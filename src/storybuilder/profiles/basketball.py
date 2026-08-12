@@ -40,3 +40,15 @@ class BasketballProfile(SportProfile):
         "dunk": "DUNK",
         "buzzer beater": "BUZZER BEATER",
     }
+
+    # Full-time summary: score row is labelled "Points"; these rows render as
+    # the same home-vs-away comparison bars soccer uses.
+    score_label = "Points"
+    summary_stats = (
+        ("3-pointers", frozenset({"3 points"})),
+        ("Dunks", frozenset({"dunk"})),
+        ("Free throws", frozenset({"free throw"})),
+        ("Blocks", frozenset({"block"})),
+        ("Steals", frozenset({"steal"})),
+        ("Fouls", frozenset({"foul"})),
+    )

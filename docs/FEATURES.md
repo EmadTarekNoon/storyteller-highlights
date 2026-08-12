@@ -109,7 +109,10 @@ class BasketballProfile(SportProfile):
 
 Configurable attributes: `handles`, `target_highlights`, `weights`,
 `default_weight`, `must_include_types`, `scoring`, `own_types` (scoring events
-that credit the opponent, e.g. own goals), `terms`, `noise_types`.
+that credit the opponent, e.g. own goals), `terms`, `noise_types`, and — for the
+full-time summary — `score_label` and `summary_stats` (a list of
+`(label, {event types})` rows rendered as home-vs-away comparison bars, exactly
+like the soccer summary).
 
 The registry auto-selects the profile when a feed's `sport.name` matches (or via
 `--sport <sport>`); unknown sports fall back to `GenericProfile`. Override a

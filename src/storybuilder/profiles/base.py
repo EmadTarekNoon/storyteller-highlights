@@ -43,6 +43,10 @@ class SportProfile:
     terms: dict[str, str] = {}
     #: event types treated as noise (excluded from highlights).
     noise_types: frozenset[str] = DEFAULT_NOISE
+    #: label for the score row on the full-time summary (e.g. "Goals", "Points").
+    score_label: str = "Score"
+    #: (label, {event types}) rows for the full-time home-vs-away comparison.
+    summary_stats: tuple[tuple[str, frozenset[str]], ...] = ()
 
     # -- scoring -----------------------------------------------------------
     def score_delta(self, event: Event, match: Match) -> ScoreDelta:
@@ -86,13 +90,21 @@ class SportProfile:
         return {"headline": headline, "subheadline": " | ".join(subparts)}
 
     def info_pages(self, match: Match, final: Score, events: list[Event]) -> list[dict]:
-        """Default full-time page: scoreboard + counts of the ranked event types."""
-        counts: dict[str, int] = {}
-        for e in events:
-            if e.type in self.weights:
-                counts[e.type] = counts.get(e.type, 0) + 1
-        rows = sorted(counts.items(), key=lambda kv: (-kv[1], kv[0]))[:6]
-        body = "\n".join(f"{self.label_for(t)}: {n}" for t, n in rows)
+        """Default full-time page: scoreboard + a home-vs-away stat comparison.
+
+        The comparison rows come from ``summary_stats`` (declarative). This is the
+        same structured shape the viewer renders as bars for soccer, so any sport
+        gets a consistent, good-looking summary for free.
+        """
+        rows: list[dict] = []
+        if self.scoring:
+            rows.append({"label": self.score_label, "home": final.home, "away": final.away})
+        for label, types in self.summary_stats:
+            home = sum(1 for e in events if e.type in types and self.side_of(e, match) == "home")
+            away = sum(1 for e in events if e.type in types and self.side_of(e, match) == "away")
+            rows.append({"label": label, "home": home, "away": away})
+
+        body = "\n".join(f"{r['label']}: {r['home']} - {r['away']}" for r in rows)
         page = {
             "type": "info",
             "headline": "Full time",
@@ -102,6 +114,7 @@ class SportProfile:
             "away_code": (match.away.code if match.away else "") or "AWAY",
             "home_score": final.home,
             "away_score": final.away,
+            "stats": rows,
             "body": body,
         }
         return [page]
