@@ -1,0 +1,116 @@
+{
+  "story_id": "story-e2da6b495575",
+  "title": "Hawks vs Wolves",
+  "source": "hawks-wolves-basketball.json",
+  "created_at": "2026-08-12T19:24:18Z",
+  "metrics": {
+    "final_score": {
+      "home": 13,
+      "away": 12
+    },
+    "total_events": 15
+  },
+  "pages": [
+    {
+      "type": "cover",
+      "headline": "Hawks 13-12 Wolves",
+      "image": "assets/21521989.jpg",
+      "subheadline": "Basketball | Test League | Test Dome | 2025-03-15"
+    },
+    {
+      "type": "highlight",
+      "minute": 2,
+      "headline": "2' BUCKET - Hawks 0-2 Wolves",
+      "caption": "First bucket of the game.",
+      "image": "assets/21522058.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 4,
+      "headline": "4' THREE - Hawks 3-2 Wolves",
+      "caption": "Early three to open the scoring.",
+      "image": "assets/21522014.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 6,
+      "headline": "6' DUNK - Hawks 3-4 Wolves",
+      "caption": "Alley-oop slam for the Wolves.",
+      "image": "assets/21522058.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 9,
+      "headline": "9' BUCKET - Hawks 3-6 Wolves",
+      "caption": "Strong drive to the basket.",
+      "image": "assets/21522436.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 16,
+      "headline": "16' THREE - Hawks 6-6 Wolves",
+      "caption": "Catch-and-shoot three by the Hawks.",
+      "image": "assets/21522413.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 20,
+      "headline": "20' BUCKET - Hawks 8-6 Wolves",
+      "caption": "Smooth mid-range jumper.",
+      "image": "assets/21522345.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 22,
+      "headline": "22' Steal - Wolves",
+      "caption": "Steal and run-out for the Wolves.",
+      "image": "assets/21521990.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 28,
+      "headline": "28' DUNK - Hawks 10-6 Wolves",
+      "caption": "Thunderous fast-break dunk!",
+      "image": "assets/21522140.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 33,
+      "headline": "33' THREE - Hawks 10-9 Wolves",
+      "caption": "Deep three from the corner by the Wolves.",
+      "image": "assets/21522345.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 36,
+      "headline": "36' Block - Hawks",
+      "caption": "Massive block at the rim.",
+      "image": "assets/21522071.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 47,
+      "headline": "47' THREE - Hawks 11-12 Wolves",
+      "caption": "The Wolves tie it with a clutch three.",
+      "image": "assets/21522412.jpg"
+    },
+    {
+      "type": "highlight",
+      "minute": 48,
+      "headline": "48' BUZZER BEATER - Hawks 13-12 Wolves",
+      "caption": "Buzzer beater! The Hawks win it at the death.",
+      "image": "assets/21522328.jpg"
+    },
+    {
+      "type": "info",
+      "headline": "Full time",
+      "home_team": "Hawks",
+      "away_team": "Wolves",
+      "home_code": "HWK",
+      "away_code": "WLV",
+      "home_score": 13,
+      "away_score": 12,
+      "body": "THREE: 4\nBUCKET: 3\nDUNK: 2\nBlock: 1\nBUZZER BEATER: 1\nFoul: 1"
+    }
+  ]
+}

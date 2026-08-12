@@ -17,6 +17,10 @@ sports**.
   and info/stats pages. A registry picks a profile from the feed's
   `sport.name`, falling back to a **`GenericProfile`** so an unknown sport still
   yields a valid Story. `SoccerProfile` is the concrete implementation.
+  Profiles are **mostly declarative**: the base class turns class attributes
+  (`weights`, `scoring`, `must_include_types`, `terms`, …) into behaviour, so a
+  new sport is typically a ~10-line subclass (see `basketball.py`). All profiles
+  in the package are **auto-discovered/registered** — no registry list to edit.
 - The **core** (`pipeline.py`, `story.py`, `validate.py`) and the **web viewer**
   are entirely sport-agnostic — the viewer only knows about `cover`/`highlight`/
   `info` pages, so new sports/teams need zero viewer changes.

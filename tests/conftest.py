@@ -68,3 +68,37 @@ def make_generic_feed() -> dict:
             }
         ],
     }
+
+
+def make_basketball_feed() -> dict:
+    """A synthetic basketball feed to exercise the newly-added sport profile."""
+    return {
+        "matchInfo": {
+            "id": "synthetic-bball",
+            "localDate": "2025-02-02",
+            "sport": {"name": "Basketball"},
+            "competition": {"name": "Test League"},
+            "venue": {"longName": "Test Dome"},
+            "contestant": [
+                {"id": "H", "name": "Hawks", "code": "HWK", "position": "home"},
+                {"id": "A", "name": "Wolves", "code": "WLV", "position": "away"},
+            ],
+        },
+        "messages": [
+            {
+                "language": "en-gb",
+                "message": [
+                    {"id": "b5", "type": "buzzer beater", "period": "4", "minute": "48", "second": "0",
+                     "teamRef1": "H", "comment": "Buzzer beater to win it for the Hawks!"},
+                    {"id": "b4", "type": "3 points", "period": "3", "minute": "34", "second": "0",
+                     "teamRef1": "A", "comment": "Deep three by the Wolves."},
+                    {"id": "b3", "type": "dunk", "period": "2", "minute": "20", "second": "0",
+                     "teamRef1": "H", "comment": "Huge slam dunk."},
+                    {"id": "b2", "type": "2 points", "period": "1", "minute": "8", "second": "0",
+                     "teamRef1": "A", "comment": "Mid-range jumper."},
+                    {"id": "b1", "type": "2 points", "period": "1", "minute": "3", "second": "0",
+                     "teamRef1": "H", "comment": "Layup to open the scoring."},
+                ],
+            }
+        ],
+    }

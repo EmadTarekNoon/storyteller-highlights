@@ -5,15 +5,17 @@ where it would live, and rough effort. Current capabilities are in
 [FEATURES.md](./FEATURES.md).
 
 ## 1. More sport types
-Add real profiles beyond the `GenericProfile` fallback.
-- **Where:** `src/storybuilder/profiles/<sport>.py` + register in
-  `profiles/__init__.py`.
-- **Examples:** rugby (tries/conversions/penalties, sin-bin), basketball
-  (2/3-pointers, quarters, lead changes), cricket (wickets/boundaries, overs).
-- **Notes:** each profile defines its own scoring model, ranking weights,
-  caption terminology, and stat rows. Period handling generalizes since the
-  model already uses `(period, minute, second)`.
-- **Effort:** ~half a day per sport.
+Add real profiles beyond the `GenericProfile` fallback. The declarative base +
+auto-discovery already make this cheap (a soccer and a basketball profile ship
+today; see `docs/FEATURES.md` "Add a new sport").
+- **Where:** just drop `src/storybuilder/profiles/<sport>.py`; it auto-registers.
+- **Examples:** rugby (tries/conversions/penalties, sin-bin), cricket
+  (wickets/boundaries, overs), American football (TD/FG/extra point).
+- **Notes:** simple sports need only class attributes (`scoring`, `weights`,
+  `must_include_types`, `terms`); override `caption`/`info_pages` only for richer
+  narration. Period handling generalizes since the model uses
+  `(period, minute, second)`.
+- **Effort:** ~10 lines / minutes for a basic sport; more for rich captions.
 
 ## 2. Externalized events configuration
 Move the currently hardcoded soccer weights / must-include / caption phrasing

@@ -7,7 +7,7 @@ so a slightly different soccer feed still produces a sensible Story.
 
 from __future__ import annotations
 
-from ..models import Caption, Event, Match, Score, ScoreDelta
+from ..models import Caption, Event, Match, Score
 from .base import SportProfile
 
 # Event types that increase the acting team's score.
@@ -47,23 +47,16 @@ DEFAULT_WEIGHT = 15.0
 
 
 class SoccerProfile(SportProfile):
+    # Declarative config — the base class turns these into scoring, ranking and
+    # must-include behaviour. Soccer only overrides caption/cover/info_pages
+    # below because it wants richer, commentary-driven narration.
     handles = ("soccer", "football")
     target_highlights = 10
-
-    def score_delta(self, event: Event, match: Match) -> ScoreDelta:
-        if event.type not in GOAL_TYPES:
-            return ScoreDelta()
-        side = self.side_of(event, match)
-        # Own goals credit the opposing side.
-        if event.type == "own goal":
-            side = "away" if side == "home" else "home"
-        return ScoreDelta(home=1) if side == "home" else ScoreDelta(away=1)
-
-    def weight(self, event: Event) -> float:
-        return WEIGHTS.get(event.type, DEFAULT_WEIGHT)
-
-    def must_include(self, event: Event) -> bool:
-        return event.type in ALWAYS_INCLUDE
+    weights = WEIGHTS
+    default_weight = DEFAULT_WEIGHT
+    must_include_types = frozenset(ALWAYS_INCLUDE)
+    scoring = {"goal": 1, "penalty goal": 1, "own goal": 1}
+    own_types = frozenset({"own goal"})
 
     def caption(self, event: Event, score: Score, match: Match) -> Caption:
         minute = _clock(event)

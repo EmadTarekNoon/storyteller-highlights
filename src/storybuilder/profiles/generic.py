@@ -47,3 +47,7 @@ class GenericProfile(SportProfile):
         away = match.away.name if match.away else "Away"
         subparts = [p for p in (match.sport, match.competition, match.venue, match.date) if p]
         return {"headline": f"{home} vs {away}", "subheadline": " | ".join(subparts)}
+
+    def info_pages(self, match: Match, final: Score, events: list[Event]) -> list[dict]:
+        # Score-agnostic: don't fabricate a 0-0 scoreboard for an unknown sport.
+        return []

@@ -1,0 +1,35 @@
+{
+  "matchInfo": {
+    "id": "example-bball",
+    "localDate": "2025-03-15",
+    "sport": { "id": "basketball", "name": "Basketball" },
+    "competition": { "name": "Test League", "knownName": "Test League" },
+    "venue": { "longName": "Test Dome" },
+    "contestant": [
+      { "id": "HWK", "name": "Hawks", "code": "HWK", "position": "home" },
+      { "id": "WLV", "name": "Wolves", "code": "WLV", "position": "away" }
+    ]
+  },
+  "messages": [
+    {
+      "language": "en-gb",
+      "message": [
+        { "id": "n15", "type": "buzzer beater", "period": "4", "minute": "48", "second": "0", "teamRef1": "HWK", "comment": "Buzzer beater! The Hawks win it at the death." },
+        { "id": "n14", "type": "3 points", "period": "4", "minute": "47", "second": "10", "teamRef1": "WLV", "comment": "The Wolves tie it with a clutch three." },
+        { "id": "n13", "type": "free throw", "period": "4", "minute": "45", "second": "0", "teamRef1": "HWK", "comment": "Two made free throws for the Hawks." },
+        { "id": "n12", "type": "block", "period": "3", "minute": "36", "second": "0", "teamRef1": "HWK", "comment": "Massive block at the rim." },
+        { "id": "n11", "type": "3 points", "period": "3", "minute": "33", "second": "0", "teamRef1": "WLV", "comment": "Deep three from the corner by the Wolves." },
+        { "id": "n10", "type": "dunk", "period": "3", "minute": "28", "second": "0", "teamRef1": "HWK", "comment": "Thunderous fast-break dunk!" },
+        { "id": "n09", "type": "steal", "period": "2", "minute": "22", "second": "0", "teamRef1": "WLV", "comment": "Steal and run-out for the Wolves." },
+        { "id": "n08", "type": "2 points", "period": "2", "minute": "20", "second": "0", "teamRef1": "HWK", "comment": "Smooth mid-range jumper." },
+        { "id": "n07", "type": "3 points", "period": "2", "minute": "16", "second": "0", "teamRef1": "HWK", "comment": "Catch-and-shoot three by the Hawks." },
+        { "id": "n06", "type": "foul", "period": "2", "minute": "14", "second": "0", "teamRef1": "WLV", "comment": "Shooting foul on the Wolves." },
+        { "id": "n05", "type": "2 points", "period": "1", "minute": "9", "second": "0", "teamRef1": "WLV", "comment": "Strong drive to the basket." },
+        { "id": "n04", "type": "dunk", "period": "1", "minute": "6", "second": "0", "teamRef1": "WLV", "comment": "Alley-oop slam for the Wolves." },
+        { "id": "n03", "type": "3 points", "period": "1", "minute": "4", "second": "0", "teamRef1": "HWK", "comment": "Early three to open the scoring." },
+        { "id": "n02", "type": "2 points", "period": "1", "minute": "2", "second": "0", "teamRef1": "WLV", "comment": "First bucket of the game." },
+        { "id": "n01", "type": "tip off", "period": "1", "minute": "0", "second": "0", "teamRef1": "HWK", "comment": "Tip off." }
+      ]
+    }
+  ]
+}

@@ -42,10 +42,11 @@ def select_highlights(match: Match, profile: SportProfile) -> list[RankedEvent]:
     running_scores = compute_running_scores(match, profile)
     target = profile.target_highlights
 
+    noise = getattr(profile, "noise_types", frozenset())
     scored: list[tuple[float, int, Event]] = []
     forced: list[tuple[int, Event]] = []
     for idx, event in enumerate(match.events):
-        if _is_noise(event):
+        if event.type in noise:
             continue
         if profile.must_include(event):
             forced.append((idx, event))
@@ -73,14 +74,6 @@ def select_highlights(match: Match, profile: SportProfile) -> list[RankedEvent]:
             )
         )
     return ranked
-
-
-# Structural/administrative events never make good standalone highlights.
-_NOISE_TYPES = {"lineup", "start", "end", "end 1", "end 2", "start delay", "end delay"}
-
-
-def _is_noise(event: Event) -> bool:
-    return event.type in _NOISE_TYPES
 
 
 def _key(event: Event, idx: int) -> str:

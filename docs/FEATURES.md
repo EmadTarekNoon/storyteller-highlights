@@ -89,13 +89,33 @@ across different teams and scorelines.
 
 ## How to extend today
 
-### Add a new sport
-1. Create `src/storybuilder/profiles/<sport>.py` subclassing `SportProfile`.
-2. Implement `score_delta`, `weight`, `caption`, `cover` (and optionally
-   `must_include`, `info_pages`, `metrics`); set `handles = ("<sport>", …)`.
-3. Register it in `profiles/__init__.py` (`_PROFILES`).
-The registry then auto-selects it when a feed's `sport.name` matches, or via
-`--sport <sport>`. No core or viewer changes required.
+### Add a new sport (usually ~10 lines, no wiring)
+Drop one file in `src/storybuilder/profiles/` with a `SportProfile` subclass that
+sets a few **declarative class attributes**. It is **auto-discovered and
+registered** — there is no registry list to edit, and the base class provides
+scoring, ranking, captions, cover, the full-time page and metrics from your
+attributes. Example (`profiles/basketball.py`):
+
+```python
+from .base import SportProfile
+
+class BasketballProfile(SportProfile):
+    handles = ("basketball",)
+    scoring = {"3 points": 3, "2 points": 2, "free throw": 1, "dunk": 2, "buzzer beater": 2}
+    weights = {"buzzer beater": 100, "dunk": 80, "3 points": 60, "2 points": 40, "free throw": 20}
+    must_include_types = frozenset({"buzzer beater", "dunk"})
+    terms = {"3 points": "THREE", "dunk": "DUNK", "buzzer beater": "BUZZER BEATER"}
+```
+
+Configurable attributes: `handles`, `target_highlights`, `weights`,
+`default_weight`, `must_include_types`, `scoring`, `own_types` (scoring events
+that credit the opponent, e.g. own goals), `terms`, `noise_types`.
+
+The registry auto-selects the profile when a feed's `sport.name` matches (or via
+`--sport <sport>`); unknown sports fall back to `GenericProfile`. Override a
+method (e.g. `caption`, `info_pages`) only when a sport needs richer behaviour —
+`soccer.py` does this for commentary-driven goal captions and a detailed stats
+page. No core or viewer changes are ever required.
 
 ### Add a new feed provider
 1. Create `src/storybuilder/adapters/<provider>.py` subclassing `FeedAdapter`.

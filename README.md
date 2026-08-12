@@ -37,7 +37,9 @@ sport-agnostic and everything specific lives behind two small seams:
   (`opta_soccer.py` handles this feed's quirks). New provider = new adapter.
 - **`profiles/`** — sport semantics (scoring, ranking weights, captions). A
   registry selects one from the feed's `sport.name`, with a `GenericProfile`
-  fallback so unknown sports still produce a valid Story. New sport = new profile.
+  fallback so unknown sports still produce a valid Story. **Adding a sport is a
+  ~10-line declarative subclass that's auto-discovered** — no registry edits
+  (see `docs/FEATURES.md`).
 
 Each Story is: a **cover**, a set of chronological **highlight** pages, and a
 **full-time summary** page (scoreboard + home-vs-away stat comparison). The
