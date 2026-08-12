@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "storybuilder"
+version = "0.1.0"
+description = "Ingest sports match events and produce a Story (JSON bundle of Pages) plus a web preview."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "jsonschema[format]==4.23.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.3",
+]
+
+[project.scripts]
+storybuilder = "storybuilder.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"

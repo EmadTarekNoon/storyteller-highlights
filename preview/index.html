@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Story Preview</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <div class="phone" id="phone">
+      <!-- Segmented progress bars -->
+      <div class="progress" id="progress" aria-hidden="true"></div>
+
+      <!-- Top chrome: title + counter -->
+      <header class="topbar">
+        <span class="story-title" id="storyTitle"></span>
+        <span class="counter" id="counter"></span>
+      </header>
+
+      <!-- The current page -->
+      <main class="stage" id="stage">
+        <div class="loading" id="loading">Loading story…</div>
+      </main>
+
+      <!-- Tap zones for prev/next -->
+      <button class="tap tap-prev" id="tapPrev" aria-label="Previous page"></button>
+      <button class="tap tap-next" id="tapNext" aria-label="Next page"></button>
+
+      <!-- Bottom chrome: play/pause + hint -->
+      <footer class="bottombar">
+        <button class="ctrl" id="playPause" aria-label="Play or pause">❚❚</button>
+        <span class="hint">Tap sides • ← → keys • Space to pause</span>
+      </footer>
+    </div>
+  </div>
+  <script src="viewer.js"></script>
+</body>
+</html>
