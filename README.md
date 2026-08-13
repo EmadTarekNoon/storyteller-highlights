@@ -80,14 +80,18 @@ Controls: side tap-zones or ← / → to navigate, **Home/End** to jump to
 first/last, **Space** (or press-and-hold) to pause. Screen-reader live region
 announces each page; respects `prefers-reduced-motion`.
 
-### Try other matches
-Two extra synthetic soccer feeds live in `examples/`. Build and view them with
-the same viewer via the `?story=` query param:
+### Try other matches (incl. another sport)
+Synthetic example feeds live in `examples/` — two more soccer matches and a
+**basketball** game that shows the same viewer/summary working for a different
+sport (via a ~10-line declarative profile). Build and view them with the same
+viewer through the `?story=` query param:
 ```bash
-python -m storybuilder --in examples/arsenal-liverpool.json --out out/story-arsenal-liverpool.json --pretty
-python -m storybuilder --in examples/madrid-barcelona.json  --out out/story-madrid-barcelona.json  --pretty
+python -m storybuilder --in examples/arsenal-liverpool.json     --out out/story-arsenal-liverpool.json     --pretty
+python -m storybuilder --in examples/madrid-barcelona.json      --out out/story-madrid-barcelona.json      --pretty
+python -m storybuilder --in examples/hawks-wolves-basketball.json --out out/story-basketball.json          --pretty
 # then open, e.g.:
 # http://localhost:8000/preview/?story=../out/story-arsenal-liverpool.json
+# http://localhost:8000/preview/?story=../out/story-basketball.json
 ```
 
 ### Test

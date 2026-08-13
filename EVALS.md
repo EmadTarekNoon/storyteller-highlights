@@ -17,6 +17,28 @@ For each goal/penalty-goal highlight we assert (in `tests/test_profiles.py`
 We also assert the running score is **monotonic** across highlights and that
 **all** goals are included, so no scoring moment is dropped or mis-ordered.
 
+The same guarantees hold for other feeds and sports: the caption structure is
+shared, so the Arsenal/Madrid example matches and the basketball example
+(`terms`-driven labels like `DUNK`/`THREE`, running score in the headline) read
+consistently.
+
+## Full-time summary correctness
+The summary page's per-team counts are derived declaratively via
+`StatRow(label, types, attribute)`. The one non-obvious case is **corners**:
+the feed's `teamRef1` on a `corner` event is the *conceding* team, verified
+against the data (e.g. "Corner, Kilmarnock. Conceded by … (Celtic)" carries
+`teamRef1`=Celtic). We encode this as `attribute="opponent"` on the Corners row;
+all other rows use `attribute="acting"`. Sanity-checked against the sample match
+(Celtic dominance: 21 shots to 3, 7 on target to 1). A dedicated unit test for
+these counts is listed in `docs/ROADMAP.md`.
+
+## When the LLM narrator lands
+Captions are deterministic today. The proposed optional `LLMNarrator`
+(`docs/ROADMAP.md`) is designed to be gated by exactly these checks — minute /
+player / score presence, length, and no hallucinated scoreline — and to fall
+back to the deterministic caption whenever a generated string fails, so quality
+never regresses below the template baseline.
+
 ## Before / after examples
 "Before" = the raw feed `comment`. "After" = the page the builder emits
 (`headline` + `caption`).
