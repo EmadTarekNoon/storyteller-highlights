@@ -72,10 +72,14 @@ The closing `info` page carries a structured home-vs-away comparison
 plain-text `body` fallback. The JSON Schema allows additional properties on
 `info` pages, so the extra fields (`home_team`, `home_score`, `stats`, …) keep
 the Story valid while letting the viewer render a scoreboard + stat bars.
+- **Declarative rows:** every sport (including soccer) defines its summary as a
+  tuple of `StatRow(label, types, attribute)`; a single base implementation
+  counts them, so no profile overrides `info_pages`.
 - **Corner attribution fix:** in the source feed a `corner` event's `teamRef1`
   is the *conceding* team (e.g. "Corner, Kilmarnock. Conceded by … (Celtic)" has
-  `teamRef1`=Celtic). We verified this from the data and credit corners to the
-  opposite side; shots/offsides/fouls are attributed to `teamRef1` as-is.
+  `teamRef1`=Celtic). We verified this from the data and express it declaratively
+  with `attribute="opponent"` on the Corners row; shots/offsides/fouls are
+  attributed to `teamRef1` as-is (`attribute="acting"`).
 
 ## Story viewer (experience)
 - Full-bleed vertical "Stories" UI: cover, highlight (photo + minute badge +

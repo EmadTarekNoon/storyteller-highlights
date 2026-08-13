@@ -58,6 +58,19 @@ feed (+squads)  ->  adapter  ->  Match model  ->  profile (rank + caption)
 - The **core** (`pipeline.py`, `story.py`, `validate.py`) and the **viewer** are
   entirely sport-agnostic.
 
+### Design principles (built to absorb new requirements)
+The system is organized around small, swappable seams behind a stable internal
+model (`Match`/`Event`/`Story`), so new requirements slot in without redesign:
+- **Data in** varies by provider -> `FeedAdapter`.
+- **Meaning** varies by sport -> `SportProfile` (mostly declarative, auto-registered).
+- **Presentation** is data-only pages (`cover`/`highlight`/`info`) rendered by a
+  dumb, sport-agnostic viewer.
+- Everything specific is declarative where possible (weights, scoring, terms,
+  `summary_stats`) and validated against the schema on the way out.
+This is why the two planned upgrades in `ROADMAP.md` — LLM-generated content and
+per-sport media — are additive seams (`Narrator`, `ImageProvider`) rather than
+rewrites: the core and viewer stay unchanged.
+
 ### Story viewer (`preview/`)
 - Full-bleed vertical Stories UI: cover, highlight (photo + minute badge +
   caption), and the full-time scoreboard/stat-comparison page.
@@ -110,9 +123,15 @@ class BasketballProfile(SportProfile):
 Configurable attributes: `handles`, `target_highlights`, `weights`,
 `default_weight`, `must_include_types`, `scoring`, `own_types` (scoring events
 that credit the opponent, e.g. own goals), `terms`, `noise_types`, and — for the
-full-time summary — `score_label` and `summary_stats` (a list of
-`(label, {event types})` rows rendered as home-vs-away comparison bars, exactly
-like the soccer summary).
+full-time summary — `score_label` and `summary_stats`.
+
+`summary_stats` is a tuple of `StatRow(label, types, attribute)` rows rendered as
+home-vs-away comparison bars. `attribute` is `"acting"` (credit the event's own
+team, the default) or `"opponent"` (credit the other side, e.g. soccer corners
+where the feed references the conceding team). This is the **single** summary
+implementation used by every sport — even soccer defines its rows this way
+(`Shots`, `On target`, `Corners` with `attribute="opponent"`, `Offsides`,
+`Fouls`, `Yellow cards`), so no profile overrides `info_pages`.
 
 The registry auto-selects the profile when a feed's `sport.name` matches (or via
 `--sport <sport>`); unknown sports fall back to `GenericProfile`. Override a

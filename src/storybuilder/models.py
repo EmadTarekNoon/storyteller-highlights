@@ -100,6 +100,21 @@ class Caption:
     explanation: str = ""
 
 
+@dataclass(frozen=True)
+class StatRow:
+    """One row of the full-time home-vs-away comparison.
+
+    ``types`` are the event types counted for the row. ``attribute`` decides
+    which side each matching event is credited to: ``"acting"`` (the event's own
+    team, the usual case) or ``"opponent"`` (e.g. corners, where the feed's team
+    reference is the conceding side).
+    """
+
+    label: str
+    types: frozenset[str]
+    attribute: str = "acting"
+
+
 @dataclass
 class RankedEvent:
     """An event selected for the Story, with its score/weight context."""

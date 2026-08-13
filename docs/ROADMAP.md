@@ -65,20 +65,42 @@ Offer the builder as a small API in addition to the CLI.
   and a closing player-of-the-match / turning-point page.
 - **Effort:** ~half a day.
 
-## 7. Optional AI caption enrichment
-Keep deterministic captions as the default; add an opt-in flag to polish phrasing
-via an LLM.
-- **Where:** a `captions` enricher invoked only when `--ai` is set + an API key
-  is present.
-- **Guardrails:** run the existing eval checks (minute/player/score presence)
-  and fall back to the deterministic caption if the model output fails them.
-- **Effort:** ~half a day plus eval tuning.
+## 7. LLM-generated page content (better UX)
+Pass structured event data to an LLM to generate richer, more natural page
+content — headlines, captions, cover/subheadlines, and short narrative "info"
+beats (e.g. "how the half unfolded") — while keeping the deterministic templates
+as the guaranteed fallback.
+- **Where:** slots cleanly into the existing profile seam. Introduce a
+  `Narrator` abstraction with two implementations: `TemplateNarrator` (today's
+  deterministic logic) and `LLMNarrator` (calls a provider). The profile/pipeline
+  depends on the `Narrator` interface, not on how text is produced.
+- **Input contract:** send the LLM a compact, typed payload per selected event
+  (minute, type, team/player names, running score, source commentary) plus match
+  context — never raw ids — so it has everything to write good copy.
+- **Config:** opt-in via `--narrator llm` (or per-profile), API key from env;
+  model + prompt templates configurable (ties into item 2's config work).
+- **Guardrails / evals:** validate every generated string against the existing
+  checks (minute/player/score presence, length, no hallucinated score) and fall
+  back to the template caption if it fails; cache by event id for determinism in
+  tests; keep a `--no-ai` reproducible mode.
+- **Effort:** ~1 day for the seam + a provider + eval gating.
 
-## 8. Richer media pipeline
-- Map events to event-accurate imagery/video where available (goal clips, player
-  photos) instead of decorative stock images.
-- Support remote asset URLs/CDN in the Story JSON.
-- **Effort:** depends on media source; ~1 day for URL support.
+## 8. Per-sport media / picture handling
+Replace the decorative, hash-picked stock images with a proper, sport-aware
+media layer so each page shows appropriate visuals.
+- **Where:** promote `assets.py` into an `ImageProvider` interface selected per
+  sport (parallel to profiles/adapters). Implementations: `LocalAssets` (today),
+  `SportPackAssets` (a per-sport image pack keyed by event *category* — goal,
+  card, save, dunk, three, …), and `RemoteAssets` (CDN/URLs, incl. event-accurate
+  photos/clips and player/club imagery where a media feed provides them).
+- **Category mapping:** profiles already know event semantics; add a small
+  `image_category(event)` (declarative map, like `terms`) so the provider can
+  choose art that matches the moment for *any* sport.
+- **Fallback chain:** event-accurate media -> sport-pack category image ->
+  placeholder, so it degrades gracefully.
+- **Viewer:** already supports remote/relative image URLs; add team crest/colour
+  theming from feed metadata.
+- **Effort:** ~1 day for the provider seam + a sport pack; more for real media.
 
 ## 9. Internationalization
 - Select the commentary language from the feed's `messages[].language` and

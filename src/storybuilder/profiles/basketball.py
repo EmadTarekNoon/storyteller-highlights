@@ -7,6 +7,7 @@ file in the package and it is auto-registered (no registry edits).
 
 from __future__ import annotations
 
+from ..models import StatRow
 from .base import SportProfile
 
 
@@ -45,10 +46,10 @@ class BasketballProfile(SportProfile):
     # the same home-vs-away comparison bars soccer uses.
     score_label = "Points"
     summary_stats = (
-        ("3-pointers", frozenset({"3 points"})),
-        ("Dunks", frozenset({"dunk"})),
-        ("Free throws", frozenset({"free throw"})),
-        ("Blocks", frozenset({"block"})),
-        ("Steals", frozenset({"steal"})),
-        ("Fouls", frozenset({"foul"})),
+        StatRow("3-pointers", frozenset({"3 points"})),
+        StatRow("Dunks", frozenset({"dunk"})),
+        StatRow("Free throws", frozenset({"free throw"})),
+        StatRow("Blocks", frozenset({"block"})),
+        StatRow("Steals", frozenset({"steal"})),
+        StatRow("Fouls", frozenset({"foul"})),
     )

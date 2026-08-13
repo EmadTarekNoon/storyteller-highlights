@@ -15,7 +15,7 @@ override a method when a sport needs genuinely custom behaviour (see
 
 from __future__ import annotations
 
-from ..models import Caption, Event, Match, Score, ScoreDelta
+from ..models import Caption, Event, Match, Score, ScoreDelta, StatRow
 
 # Structural/administrative events that never make good standalone highlights.
 DEFAULT_NOISE = frozenset(
@@ -45,8 +45,8 @@ class SportProfile:
     noise_types: frozenset[str] = DEFAULT_NOISE
     #: label for the score row on the full-time summary (e.g. "Goals", "Points").
     score_label: str = "Score"
-    #: (label, {event types}) rows for the full-time home-vs-away comparison.
-    summary_stats: tuple[tuple[str, frozenset[str]], ...] = ()
+    #: rows for the full-time home-vs-away comparison (see :class:`StatRow`).
+    summary_stats: tuple[StatRow, ...] = ()
 
     # -- scoring -----------------------------------------------------------
     def score_delta(self, event: Event, match: Match) -> ScoreDelta:
@@ -99,10 +99,19 @@ class SportProfile:
         rows: list[dict] = []
         if self.scoring:
             rows.append({"label": self.score_label, "home": final.home, "away": final.away})
-        for label, types in self.summary_stats:
-            home = sum(1 for e in events if e.type in types and self.side_of(e, match) == "home")
-            away = sum(1 for e in events if e.type in types and self.side_of(e, match) == "away")
-            rows.append({"label": label, "home": home, "away": away})
+        for row in self.summary_stats:
+            home = away = 0
+            for e in events:
+                if e.type not in row.types:
+                    continue
+                side = self.side_of(e, match)
+                if row.attribute == "opponent":
+                    side = {"home": "away", "away": "home"}.get(side, "")
+                if side == "home":
+                    home += 1
+                elif side == "away":
+                    away += 1
+            rows.append({"label": row.label, "home": home, "away": away})
 
         body = "\n".join(f"{r['label']}: {r['home']} - {r['away']}" for r in rows)
         page = {
