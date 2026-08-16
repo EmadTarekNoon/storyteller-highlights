@@ -3,10 +3,18 @@
 Weights and event handling were designed from the event-type distribution in
 the sample feed, but the pipeline tolerates unseen types via a default weight,
 so a slightly different soccer feed still produces a sensible Story.
+
+Soccer keeps the declarative config on the profile but swaps in two richer
+collaborators: a ``SoccerNarrator`` (commentary-driven goal/card/penalty
+captions) and a ``SoccerComposer`` (scoreline cover + detailed metrics).
 """
 
 from __future__ import annotations
 
+from functools import cached_property
+
+from ..behaviors.composition import SummaryComposer
+from ..behaviors.narration import Narrator
 from ..models import Caption, Event, Match, Score, StatRow
 from .base import SportProfile
 
@@ -47,9 +55,8 @@ DEFAULT_WEIGHT = 15.0
 
 
 class SoccerProfile(SportProfile):
-    # Declarative config — the base class turns these into scoring, ranking,
-    # must-include behaviour and the full-time summary. Soccer only overrides
-    # caption/cover below, for richer commentary-driven narration.
+    # Declarative config — the base class turns these into scoring, ranking and
+    # must-include behaviour. Soccer swaps in richer narration/composition below.
     handles = ("soccer", "football")
     target_highlights = 10
     weights = WEIGHTS
@@ -61,7 +68,9 @@ class SoccerProfile(SportProfile):
     # Full-time summary rows (rendered as home-vs-away comparison bars).
     score_label = "Goals"
     summary_stats = (
-        StatRow("Shots", frozenset({"goal", "penalty goal", "miss", "attempt saved", "attempt blocked", "post"})),
+        StatRow(
+            "Shots", frozenset({"goal", "penalty goal", "miss", "attempt saved", "attempt blocked", "post"})
+        ),
         StatRow("On target", frozenset({"goal", "penalty goal", "attempt saved"})),
         # Corners: the feed credits teamRef1 to the *conceding* side, so flip it.
         StatRow("Corners", frozenset({"corner"}), attribute="opponent"),
@@ -69,6 +78,18 @@ class SoccerProfile(SportProfile):
         StatRow("Fouls", frozenset({"free kick lost"})),
         StatRow("Yellow cards", frozenset({"yellow card", "second yellow card"})),
     )
+
+    @cached_property
+    def narrator(self) -> Narrator:
+        return SoccerNarrator()
+
+    @cached_property
+    def composer(self) -> SummaryComposer:
+        return SoccerComposer(self.scoring, self.score_label, self.summary_stats)
+
+
+class SoccerNarrator:
+    """Commentary-driven soccer captions (goals, cards, penalties, chances)."""
 
     def caption(self, event: Event, score: Score, match: Match) -> Caption:
         minute = _clock(event)
@@ -109,10 +130,15 @@ class SoccerProfile(SportProfile):
         headline = f"{minute} {event.type.title()}" + (f" - {team}" if team else "")
         return Caption(headline, event.comment or event.type.title(), "")
 
+
+class SoccerComposer(SummaryComposer):
+    """Soccer cover (always a scoreline) + richer per-type metrics."""
+
     def cover(self, match: Match, final: Score) -> dict:
-        winner = self._headline_result(match, final)
+        home = match.home.name if match.home else "Home"
+        away = match.away.name if match.away else "Away"
         subparts = [p for p in (match.competition, match.venue, match.date) if p]
-        return {"headline": winner, "subheadline": " | ".join(subparts)}
+        return {"headline": f"{home} {final.home}-{final.away} {away}", "subheadline": " | ".join(subparts)}
 
     def metrics(self, match: Match, final: Score, events: list[Event]) -> dict:
         counts = _count_types(events)
@@ -127,12 +153,6 @@ class SoccerProfile(SportProfile):
             "event_counts": counts,
             "total_events": len(events),
         }
-
-    # -- internal helpers --------------------------------------------------
-    def _headline_result(self, match: Match, final: Score) -> str:
-        home = match.home.name if match.home else "Home"
-        away = match.away.name if match.away else "Away"
-        return f"{home} {final.home}-{final.away} {away}"
 
 
 def _scoreline(match: Match, score: Score) -> str:

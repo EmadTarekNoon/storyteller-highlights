@@ -7,8 +7,7 @@ is what lets the pipeline and viewer stay generic.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
-from typing import Optional
+from dataclasses import dataclass
 
 
 @dataclass(frozen=True)
@@ -34,9 +33,9 @@ class Event:
     period: int
     minute: int
     second: int
-    team: Optional[Team] = None
-    player: Optional[str] = None
-    player2: Optional[str] = None
+    team: Team | None = None
+    player: str | None = None
+    player2: str | None = None
     comment: str = ""
     raw_id: str = ""
 
@@ -75,7 +74,7 @@ class Score:
     home: int = 0
     away: int = 0
 
-    def add(self, *, home: int = 0, away: int = 0) -> "Score":
+    def add(self, *, home: int = 0, away: int = 0) -> Score:
         return Score(self.home + home, self.away + away)
 
 
@@ -126,16 +125,14 @@ class RankedEvent:
 
 
 # --- Page / Story builders -------------------------------------------------
-# The output schema (schema/story.schema.json) defines three page types.
-# These helpers centralize construction so field names stay consistent and the
-# assembled dict always matches the schema.
+# Backwards-compatible convenience wrappers around the typed page classes in
+# ``pages.py`` (the single source of truth for page shape + schema).
 
 
 def cover_page(headline: str, image: str, subheadline: str = "") -> dict:
-    page: dict = {"type": "cover", "headline": headline, "image": image}
-    if subheadline:
-        page["subheadline"] = subheadline
-    return page
+    from .pages import CoverPage
+
+    return CoverPage(headline=headline, image=image, subheadline=subheadline).to_dict()
 
 
 def highlight_page(
@@ -145,21 +142,14 @@ def highlight_page(
     image: str = "",
     explanation: str = "",
 ) -> dict:
-    page: dict = {
-        "type": "highlight",
-        "minute": minute,
-        "headline": headline,
-        "caption": caption,
-    }
-    if image:
-        page["image"] = image
-    if explanation:
-        page["explanation"] = explanation
-    return page
+    from .pages import HighlightPage
+
+    return HighlightPage(
+        minute=minute, headline=headline, caption=caption, image=image, explanation=explanation
+    ).to_dict()
 
 
 def info_page(headline: str, body: str = "") -> dict:
-    page: dict = {"type": "info", "headline": headline}
-    if body:
-        page["body"] = body
-    return page
+    from .pages import InfoPage
+
+    return InfoPage(headline=headline, body=body).to_dict()

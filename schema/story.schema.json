@@ -109,6 +109,71 @@
                 "type": "string"
               }
             }
+          },
+          {
+            "type": "object",
+            "required": [
+              "type",
+              "headline",
+              "home_team",
+              "away_team",
+              "home_score",
+              "away_score",
+              "stats"
+            ],
+            "additionalProperties": true,
+            "properties": {
+              "type": {
+                "const": "summary"
+              },
+              "headline": {
+                "type": "string"
+              },
+              "home_team": {
+                "type": "string"
+              },
+              "away_team": {
+                "type": "string"
+              },
+              "home_code": {
+                "type": "string"
+              },
+              "away_code": {
+                "type": "string"
+              },
+              "home_score": {
+                "type": "integer"
+              },
+              "away_score": {
+                "type": "integer"
+              },
+              "stats": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "label",
+                    "home",
+                    "away"
+                  ],
+                  "additionalProperties": true,
+                  "properties": {
+                    "label": {
+                      "type": "string"
+                    },
+                    "home": {
+                      "type": "integer"
+                    },
+                    "away": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              },
+              "body": {
+                "type": "string"
+              }
+            }
           }
         ]
       }

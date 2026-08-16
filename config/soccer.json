@@ -1,0 +1,54 @@
+{
+  "_comment": "Externalized soccer tuning. Mirrors the built-in SoccerProfile defaults; edit to retune ranking/summary without code changes.",
+  "target_highlights": 10,
+  "default_weight": 15.0,
+  "scoring": {
+    "goal": 1,
+    "penalty goal": 1,
+    "own goal": 1
+  },
+  "own_types": ["own goal"],
+  "must_include_types": [
+    "goal",
+    "penalty goal",
+    "own goal",
+    "red card",
+    "second yellow card",
+    "penalty won",
+    "penalty lost"
+  ],
+  "weights": {
+    "goal": 100.0,
+    "penalty goal": 100.0,
+    "own goal": 95.0,
+    "red card": 85.0,
+    "penalty won": 75.0,
+    "penalty lost": 74.0,
+    "penalty miss": 73.0,
+    "post": 60.0,
+    "attempt saved": 55.0,
+    "attempt blocked": 45.0,
+    "miss": 42.0,
+    "second yellow card": 84.0,
+    "yellow card": 40.0,
+    "offside": 25.0,
+    "substitution": 22.0,
+    "corner": 18.0,
+    "free kick won": 10.0,
+    "free kick lost": 8.0,
+    "added time": 6.0,
+    "start delay": 5.0,
+    "end delay": 5.0,
+    "start": 4.0,
+    "lineup": 3.0
+  },
+  "score_label": "Goals",
+  "summary_stats": [
+    {"label": "Shots", "types": ["goal", "penalty goal", "miss", "attempt saved", "attempt blocked", "post"]},
+    {"label": "On target", "types": ["goal", "penalty goal", "attempt saved"]},
+    {"label": "Corners", "types": ["corner"], "attribute": "opponent"},
+    {"label": "Offsides", "types": ["offside"]},
+    {"label": "Fouls", "types": ["free kick lost"]},
+    {"label": "Yellow cards", "types": ["yellow card", "second yellow card"]}
+  ]
+}

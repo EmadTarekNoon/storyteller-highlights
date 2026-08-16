@@ -46,17 +46,29 @@ feed (+squads)  ->  adapter  ->  Match model  ->  profile (rank + caption)
 - **CLI flags:** `--in`, `--out`, `--squads`, `--format`, `--sport`, `--assets`,
   `--schema`, `--story-id`, `--pretty`, `--no-validate`.
 
-### Pluggable architecture (two seams)
+### Pluggable architecture (swappable seams)
 - **Feed adapters** (`src/storybuilder/adapters/`): map a raw provider feed into
   the internal `Match` model. `opta_soccer` handles the sample feed's format.
-  Selection is explicit (`--format`) or auto-detected.
-- **Sport profiles** (`src/storybuilder/profiles/`): supply sport semantics —
-  scoring, ranking weights, must-include rules, caption terminology, cover, info
-  pages, and metrics. A registry selects a profile from the feed's `sport.name`
-  with a `GenericProfile` fallback (`--sport` overrides). `SoccerProfile` is the
-  concrete implementation.
+  Adapters are **auto-discovered** (drop a module, set `name`); selection is
+  explicit (`--format`) or auto-detected (by `priority`, then `can_parse`).
+- **Sport profiles** (`src/storybuilder/profiles/`): supply sport semantics.
+  A registry selects a profile from the feed's `sport.name` with a
+  `GenericProfile` fallback (`--sport` overrides). A profile is a **declarative
+  bag of config** wired to five collaborators it can swap independently:
+  **`behaviors/`** — `Scorer`, `Ranker`, `Narrator`, `PageComposer`,
+  `HighlightSelector`. `SoccerProfile` swaps in a `SoccerNarrator` +
+  `SoccerComposer`; `GenericProfile` swaps in a `NullScorer` + `KeywordRanker`.
+- **Typed pages** (`src/storybuilder/pages.py`): `cover` / `highlight` / `info` /
+  `summary` are dataclasses that own both their serialization and their JSON
+  Schema fragment (single source of truth; a test enforces schema parity).
+- **Externalized config** (`config/<sport>.json`): per-sport weights,
+  must-include, scoring, terms, and summary rows as data (see below).
+- **Orchestration** (`src/storybuilder/app.py`): `build_story_from_feed(...)` is
+  the one entry point shared by the CLI and the optional FastAPI service
+  (`src/storybuilder/service.py`).
 - The **core** (`pipeline.py`, `story.py`, `validate.py`) and the **viewer** are
-  entirely sport-agnostic.
+  entirely sport-agnostic; the viewer renders pages via a **renderer registry**
+  keyed by page `type`.
 
 ### Design principles (built to absorb new requirements)
 The system is organized around small, swappable seams behind a stable internal
@@ -67,9 +79,10 @@ model (`Match`/`Event`/`Story`), so new requirements slot in without redesign:
   dumb, sport-agnostic viewer.
 - Everything specific is declarative where possible (weights, scoring, terms,
   `summary_stats`) and validated against the schema on the way out.
-This is why the two planned upgrades in `ROADMAP.md` — LLM-generated content and
-per-sport media — are additive seams (`Narrator`, `ImageProvider`) rather than
-rewrites: the core and viewer stay unchanged.
+This is why upgrades stay additive rather than rewrites: the `Narrator` seam is
+already in place (an `LLMNarrator` just implements the interface), and per-sport
+media would follow the same pattern as a future `ImageProvider` seam — the core
+and viewer stay unchanged.
 
 ### Story viewer (`preview/`)
 - Full-bleed vertical Stories UI: cover, highlight (photo + minute badge +
@@ -86,7 +99,9 @@ rewrites: the core and viewer stay unchanged.
 
 ### Output contract
 Top-level: `story_id`, `title`, `source`, `created_at`, `metrics`, `pages`.
-Page types: `cover`, `highlight`, `info`. See `schema/story.schema.json` and the
+Page types: `cover`, `highlight`, `info` (generic text), and `summary` (the
+full-time scoreboard + stat comparison). Each is a typed dataclass in `pages.py`
+that owns its schema fragment. See `schema/story.schema.json` and the
 `pack_id`/`story_id` note in `DECISIONS.md`.
 
 ### Tests
@@ -128,23 +143,38 @@ full-time summary — `score_label` and `summary_stats`.
 `summary_stats` is a tuple of `StatRow(label, types, attribute)` rows rendered as
 home-vs-away comparison bars. `attribute` is `"acting"` (credit the event's own
 team, the default) or `"opponent"` (credit the other side, e.g. soccer corners
-where the feed references the conceding team). This is the **single** summary
-implementation used by every sport — even soccer defines its rows this way
+where the feed references the conceding team). The default `SummaryComposer`
+renders these rows for every sport — even soccer defines its rows this way
 (`Shots`, `On target`, `Corners` with `attribute="opponent"`, `Offsides`,
-`Fouls`, `Yellow cards`), so no profile overrides `info_pages`.
+`Fouls`, `Yellow cards`).
 
 The registry auto-selects the profile when a feed's `sport.name` matches (or via
-`--sport <sport>`); unknown sports fall back to `GenericProfile`. Override a
-method (e.g. `caption`, `info_pages`) only when a sport needs richer behaviour —
-`soccer.py` does this for commentary-driven goal captions and a detailed stats
-page. No core or viewer changes are ever required.
+`--sport <sport>`); unknown sports fall back to `GenericProfile`. For richer
+behaviour, swap a **collaborator** rather than the whole profile: return a custom
+`Narrator` / `PageComposer` from the matching property — `soccer.py` does this
+(`SoccerNarrator` for commentary-driven captions, `SoccerComposer` for a
+detailed stats page + metrics). No core or viewer changes are ever required.
 
 ### Add a new feed provider
 1. Create `src/storybuilder/adapters/<provider>.py` subclassing `FeedAdapter`.
-2. Implement `can_parse(raw)` (for auto-detection) and
+2. Set a unique `name` (and optionally a `priority`; lower is tried first).
+3. Implement `can_parse(raw)` (for auto-detection) and
    `parse(raw, squads, source)` returning a `Match`.
-3. Register it in `adapters/__init__.py` (`_ADAPTERS`).
-Select via `--format <name>` or rely on auto-detection.
+It is **auto-discovered** — no registry list to edit. Select via
+`--format <name>` or rely on auto-detection.
+
+### Tune a sport without code
+Create `config/<sport>.json` with any of `target_highlights`, `default_weight`,
+`weights`, `scoring`, `must_include_types`, `own_types`, `terms`, `noise_types`,
+`score_label`, and `summary_stats` (list of `{label, types, attribute}`). It is
+applied on top of the profile's defaults when a feed selects that sport (or via
+`get_profile(sport, config_dir=...)` / `build_story_from_feed(config_dir=...)`
+for a custom config set). See `config/soccer.json`.
+
+### Swap how captions are produced (e.g. an LLM narrator)
+Implement the `Narrator` protocol (`behaviors/narration.py`) and return it from
+your profile's `narrator` property. The pipeline depends only on the interface,
+so a future `LLMNarrator` slots in with no core/viewer changes.
 
 ### Point the viewer at a different Story
 Serve the repo root and open `preview/?story=<relative-or-absolute-url>`.

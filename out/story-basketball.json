@@ -1,8 +1,8 @@
 {
-  "story_id": "story-00901c49dfcc",
+  "story_id": "story-d312194f9f43",
   "title": "Hawks vs Wolves",
   "source": "hawks-wolves-basketball.json",
-  "created_at": "2026-08-13T11:35:37Z",
+  "created_at": "2026-08-16T12:03:10Z",
   "metrics": {
     "final_score": {
       "home": 13,
@@ -102,7 +102,7 @@
       "image": "assets/21522328.jpg"
     },
     {
-      "type": "info",
+      "type": "summary",
       "headline": "Full time",
       "home_team": "Hawks",
       "away_team": "Wolves",

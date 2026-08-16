@@ -9,8 +9,6 @@ by accident.
 
 from __future__ import annotations
 
-from typing import Optional
-
 from .models import Team
 
 
@@ -21,12 +19,12 @@ class Resolver:
         self._teams = teams
         self._players = players
 
-    def team(self, team_id: Optional[str]) -> Optional[Team]:
+    def team(self, team_id: str | None) -> Team | None:
         if not team_id:
             return None
         return self._teams.get(team_id)
 
-    def player(self, player_id: Optional[str]) -> Optional[str]:
+    def player(self, player_id: str | None) -> str | None:
         if not player_id:
             return None
         return self._players.get(player_id, player_id)

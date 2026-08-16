@@ -23,10 +23,16 @@ def test_build_team_map_falls_back_to_order():
 
 
 def test_build_player_map_prefers_matchname():
-    doc = {"squad": [{"person": [
-        {"id": "p1", "matchName": "J. Kenny", "firstName": "Johnny", "lastName": "Kenny"},
-        {"id": "p2", "firstName": "Kieran", "lastName": "Tierney"},
-    ]}]}
+    doc = {
+        "squad": [
+            {
+                "person": [
+                    {"id": "p1", "matchName": "J. Kenny", "firstName": "Johnny", "lastName": "Kenny"},
+                    {"id": "p2", "firstName": "Kieran", "lastName": "Tierney"},
+                ]
+            }
+        ]
+    }
     players = build_player_map([doc])
     assert players["p1"] == "J. Kenny"
     assert players["p2"] == "Kieran Tierney"

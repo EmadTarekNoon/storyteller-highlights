@@ -1,26 +1,35 @@
-"""Sport profile interface.
+"""Sport profile: a declarative bag of configuration that wires behaviour seams.
 
 A profile encapsulates everything sport-specific: how events change the score,
 how important each event is for ranking, which events must always be shown, how
-captions read, and which cover/info pages make sense.
+captions read, and which cover/summary pages make sense.
 
 Adding a new sport is meant to be tiny: subclass :class:`SportProfile`, set a
 handful of **declarative class attributes** (``handles``, ``weights``,
 ``scoring``, ``must_include_types``, ``terms``), and drop the file in this
 package. It is auto-discovered and registered - no edits to any registry list.
-Everything below has a working default driven by those attributes, so you only
-override a method when a sport needs genuinely custom behaviour (see
-``soccer.py`` for a rich example).
+
+Internally the profile owns five swappable collaborators (``scorer``, ``ranker``,
+``narrator``, ``composer``, ``selector``) built from those attributes. Override a
+single collaborator (see ``soccer.py``'s ``SoccerNarrator``) when a sport needs
+genuinely custom behaviour, or override a method for a one-off tweak - the
+public methods below simply delegate to the collaborators.
 """
 
 from __future__ import annotations
 
-from ..models import Caption, Event, Match, Score, ScoreDelta, StatRow
+from functools import cached_property
+
+from ..behaviors.common import label_for, scoreline, side_of
+from ..behaviors.composition import PageComposer, SummaryComposer
+from ..behaviors.narration import Narrator, TemplateNarrator
+from ..behaviors.ranking import Ranker, WeightRanker
+from ..behaviors.scoring import AttributeScorer, Scorer
+from ..behaviors.selection import HighlightSelector, WeightedSelector
+from ..models import Caption, Event, Match, RankedEvent, Score, ScoreDelta, StatRow
 
 # Structural/administrative events that never make good standalone highlights.
-DEFAULT_NOISE = frozenset(
-    {"lineup", "start", "end", "end 1", "end 2", "start delay", "end delay", "kickoff"}
-)
+DEFAULT_NOISE = frozenset({"lineup", "start", "end", "end 1", "end 2", "start delay", "end delay", "kickoff"})
 
 
 class SportProfile:
@@ -48,107 +57,69 @@ class SportProfile:
     #: rows for the full-time home-vs-away comparison (see :class:`StatRow`).
     summary_stats: tuple[StatRow, ...] = ()
 
-    # -- scoring -----------------------------------------------------------
-    def score_delta(self, event: Event, match: Match) -> ScoreDelta:
-        """Default: award ``scoring[type]`` points to the acting side."""
-        points = self.scoring.get(event.type, 0)
-        if not points:
-            return ScoreDelta()
-        side = self.side_of(event, match)
-        if event.type in self.own_types:
-            side = "away" if side == "home" else "home"
-        return ScoreDelta(home=points) if side == "home" else ScoreDelta(away=points)
+    def __init__(self, config: dict | None = None):
+        """Optionally override the declarative class attributes from ``config``.
 
-    # -- ranking -----------------------------------------------------------
+        ``config`` is a raw (JSON-shaped) dict; it is applied before any
+        collaborator is built, so externalized tuning takes full effect.
+        """
+        if config:
+            from ..config import apply_config
+
+            apply_config(self, config)
+
+    # -- collaborators (override a property to swap one aspect) ------------
+    @cached_property
+    def scorer(self) -> Scorer:
+        return AttributeScorer(self.scoring, self.own_types)
+
+    @cached_property
+    def ranker(self) -> Ranker:
+        return WeightRanker(self.weights, self.default_weight, self.must_include_types)
+
+    @cached_property
+    def narrator(self) -> Narrator:
+        return TemplateNarrator(self.terms, self.scoring)
+
+    @cached_property
+    def composer(self) -> PageComposer:
+        return SummaryComposer(self.scoring, self.score_label, self.summary_stats)
+
+    @cached_property
+    def selector(self) -> HighlightSelector:
+        return WeightedSelector()
+
+    # -- public API (delegates to the collaborators) ----------------------
+    def score_delta(self, event: Event, match: Match) -> ScoreDelta:
+        return self.scorer.score_delta(event, match)
+
     def weight(self, event: Event) -> float:
-        return self.weights.get(event.type, self.default_weight)
+        return self.ranker.weight(event)
 
     def must_include(self, event: Event) -> bool:
-        return event.type in self.must_include_types
+        return self.ranker.must_include(event)
 
-    # -- narration ---------------------------------------------------------
     def caption(self, event: Event, score: Score, match: Match) -> Caption:
-        """Generic caption: minute + label + team, scoreline for scoring events."""
-        minute = f"{event.minute}'"
-        team = event.team.name if event.team else ""
-        label = self.label_for(event.type)
-        headline = f"{minute} {label}" + (f" - {team}" if team else "")
-        if event.type in self.scoring:
-            headline = f"{minute} {label} - {self.scoreline(match, score)}"
-        body = event.comment or label
-        return Caption(headline, body, "")
+        return self.narrator.caption(event, score, match)
 
-    # -- structural pages --------------------------------------------------
     def cover(self, match: Match, final: Score) -> dict:
-        home = match.home.name if match.home else "Home"
-        away = match.away.name if match.away else "Away"
-        subparts = [p for p in (match.sport, match.competition, match.venue, match.date) if p]
-        if self.scoring and (final.home or final.away):
-            headline = f"{home} {final.home}-{final.away} {away}"
-        else:
-            headline = f"{home} vs {away}"
-        return {"headline": headline, "subheadline": " | ".join(subparts)}
+        return self.composer.cover(match, final)
 
     def info_pages(self, match: Match, final: Score, events: list[Event]) -> list[dict]:
-        """Default full-time page: scoreboard + a home-vs-away stat comparison.
-
-        The comparison rows come from ``summary_stats`` (declarative). This is the
-        same structured shape the viewer renders as bars for soccer, so any sport
-        gets a consistent, good-looking summary for free.
-        """
-        rows: list[dict] = []
-        if self.scoring:
-            rows.append({"label": self.score_label, "home": final.home, "away": final.away})
-        for row in self.summary_stats:
-            home = away = 0
-            for e in events:
-                if e.type not in row.types:
-                    continue
-                side = self.side_of(e, match)
-                if row.attribute == "opponent":
-                    side = {"home": "away", "away": "home"}.get(side, "")
-                if side == "home":
-                    home += 1
-                elif side == "away":
-                    away += 1
-            rows.append({"label": row.label, "home": home, "away": away})
-
-        body = "\n".join(f"{r['label']}: {r['home']} - {r['away']}" for r in rows)
-        page = {
-            "type": "info",
-            "headline": "Full time",
-            "home_team": match.home.name if match.home else "Home",
-            "away_team": match.away.name if match.away else "Away",
-            "home_code": (match.home.code if match.home else "") or "HOME",
-            "away_code": (match.away.code if match.away else "") or "AWAY",
-            "home_score": final.home,
-            "away_score": final.away,
-            "stats": rows,
-            "body": body,
-        }
-        return [page]
+        return self.composer.info_pages(match, final, events)
 
     def metrics(self, match: Match, final: Score, events: list[Event]) -> dict:
-        return {
-            "final_score": {"home": final.home, "away": final.away},
-            "total_events": len(events),
-        }
+        return self.composer.metrics(match, final, events)
 
-    # -- helpers -----------------------------------------------------------
+    def select_highlights(self, match: Match) -> list[RankedEvent]:
+        return self.selector.select(match, self)
+
+    # -- helpers (kept for convenience / backward compatibility) ----------
     def label_for(self, event_type: str) -> str:
-        return self.terms.get(event_type, event_type.title())
+        return label_for(event_type, self.terms)
 
     def scoreline(self, match: Match, score: Score) -> str:
-        home = match.home.name if match.home else "Home"
-        away = match.away.name if match.away else "Away"
-        return f"{home} {score.home}-{score.away} {away}"
+        return scoreline(match, score)
 
     def side_of(self, event: Event, match: Match) -> str:
-        """Return 'home'/'away'/'' for the event's team."""
-        if event.team is None:
-            return ""
-        if match.home and event.team.id == match.home.id:
-            return "home"
-        if match.away and event.team.id == match.away.id:
-            return "away"
-        return "home" if event.team.home else "away"
+        return side_of(event, match)

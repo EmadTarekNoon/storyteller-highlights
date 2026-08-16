@@ -44,6 +44,6 @@ class Assets:
         pool = self._images[1:] or self._images
         if not pool:
             return self.placeholder
-        key = f"{event.raw_id}|{event.type}|{event.minute}".encode("utf-8")
+        key = f"{event.raw_id}|{event.type}|{event.minute}".encode()
         idx = int(hashlib.sha1(key).hexdigest(), 16) % len(pool)
         return pool[idx]

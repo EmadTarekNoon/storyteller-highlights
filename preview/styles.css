@@ -197,14 +197,17 @@ html, body {
 .page.cover .content { padding-bottom: 90px; }
 .page.cover h1 { font-size: 38px; }
 
-/* Info page: solid panel, no photo */
-.page.info { justify-content: center; }
-.page.info .bg {
+/* Info / summary pages: solid panel, no photo */
+.page.info,
+.page.summary { justify-content: center; }
+.page.info .bg,
+.page.summary .bg {
   background:
     radial-gradient(120% 80% at 50% -10%, rgba(22, 196, 127, 0.22), transparent 60%),
     linear-gradient(160deg, #14243f 0%, #0a1526 60%, #070d18 100%);
 }
-.page.info .content { padding: 34px 24px; }
+.page.info .content,
+.page.summary .content { padding: 34px 24px; }
 
 .kicker {
   text-align: center;
@@ -273,7 +276,8 @@ html, body {
 }
 
 /* Text fallback if structured stats are absent */
-.page.info .body {
+.page.info .body,
+.page.summary .body {
   white-space: pre-line;
   font-size: 16px;
   line-height: 1.7;

@@ -15,7 +15,7 @@ How you achieve that is up to you. The below information serves to explain what 
 - `data/` — The raw data which you have to work with `match_events.json` here (see `data/events_schema.md`).
 - `assets/` — Images which you may wish to use in your Story JSON and Story Viewer.
 - `out/` — The output JSON files which you produce. Add `.gitkeep` to keep the folder.
-- `schema/pack.schema.json` — JSON Schema for validating the output pack.
+- `schema/story.schema.json` — JSON Schema for validating the output Story.
 - `preview/` — A place to put the Story viewer which you build.
 - `tests/` - An empty tests folder which you might want to populate.
 - `templates/DECISIONS.md`, `templates/AI_USAGE.md`, `templates/EVALS.md` — Template documents you can fill in.
@@ -32,14 +32,25 @@ schema-valid Story (`out/story.json`), and a **zero-dependency web viewer**
 
 ### Design: generic by construction
 Nothing is hardcoded to Celtic/Kilmarnock or to soccer. The core is
-sport-agnostic and everything specific lives behind two small seams:
+sport-agnostic and everything specific lives behind small, swappable seams:
 - **`adapters/`** — parse a provider feed into the internal `Match` model
-  (`opta_soccer.py` handles this feed's quirks). New provider = new adapter.
-- **`profiles/`** — sport semantics (scoring, ranking weights, captions). A
-  registry selects one from the feed's `sport.name`, with a `GenericProfile`
-  fallback so unknown sports still produce a valid Story. **Adding a sport is a
-  ~10-line declarative subclass that's auto-discovered** — no registry edits
-  (see `docs/FEATURES.md`).
+  (`opta_soccer.py` handles this feed's quirks). New provider = new adapter,
+  **auto-discovered** (no registry edits).
+- **`profiles/`** — sport semantics. A registry selects one from the feed's
+  `sport.name`, with a `GenericProfile` fallback so unknown sports still produce
+  a valid Story. **Adding a sport is a ~10-line declarative subclass that's
+  auto-discovered.** A profile is just declarative config wired to five
+  swappable collaborators in **`behaviors/`** — `Scorer`, `Ranker`, `Narrator`,
+  `PageComposer`, `HighlightSelector` — so any single aspect (e.g. an
+  LLM-backed `Narrator`) can be replaced without touching the others.
+- **`pages.py`** — pages are **typed and self-describing**: each page type owns
+  its serialization *and* its JSON-Schema fragment, and a test asserts the
+  builder, schema, and viewer never drift.
+- **`config/`** — per-sport ranking/summary tuning lives in
+  `config/<sport>.json` (data, not code), applied on top of the declarative
+  defaults so non-developers can retune without a code change.
+- **`app.py` / `service.py`** — orchestration is a single reusable function
+  (`build_story_from_feed`) shared by the CLI and an optional FastAPI service.
 
 Each Story is: a **cover**, a set of chronological **highlight** pages, and a
 **full-time summary** page (scoreboard + home-vs-away stat comparison). The
@@ -93,6 +104,24 @@ python -m storybuilder --in examples/hawks-wolves-basketball.json --out out/stor
 # http://localhost:8000/preview/?story=../out/story-arsenal-liverpool.json
 # http://localhost:8000/preview/?story=../out/story-basketball.json
 ```
+
+### Run as an HTTP service (optional)
+The same pipeline is exposed as a small API (install the extra first):
+```bash
+pip install -e ".[service]"
+storybuilder-serve            # serves on http://localhost:8080
+# POST a feed and get a Story back:
+#   POST /stories  { "feed": <feed json>, "squads": [...], "sport": "soccer" }
+#   GET  /healthz
+```
+Both the CLI and the service call the one orchestration function
+(`storybuilder.app.build_story_from_feed`), so behaviour is identical.
+
+### Tune a sport without code (optional)
+Ranking weights, must-include events, and the summary rows for a sport live in
+`config/<sport>.json` (see `config/soccer.json`). Edit that file to retune the
+narrative; the values override the built-in defaults, and a test guarantees the
+shipped config reproduces them exactly.
 
 ### Test
 ```bash

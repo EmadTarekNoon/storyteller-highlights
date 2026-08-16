@@ -6,7 +6,8 @@ import uuid
 from datetime import datetime, timezone
 
 from .assets import Assets
-from .models import Match, cover_page, highlight_page
+from .models import Match
+from .pages import CoverPage, HighlightPage
 from .pipeline import final_score, select_highlights
 from .profiles.base import SportProfile
 
@@ -26,24 +27,24 @@ def build_story(
     # Cover page (image injected here so profiles stay text-only).
     cover_info = profile.cover(match, final)
     pages.append(
-        cover_page(
+        CoverPage(
             headline=cover_info.get("headline", _default_title(match)),
             image=assets.cover(),
             subheadline=cover_info.get("subheadline", ""),
-        )
+        ).to_dict()
     )
 
     # Highlight pages, in chronological order.
     for ranked in highlights:
         caption = profile.caption(ranked.event, ranked.score, match)
         pages.append(
-            highlight_page(
+            HighlightPage(
                 minute=_clamp_minute(ranked.event.minute),
                 headline=caption.headline,
                 caption=caption.caption,
                 image=assets.for_event(ranked.event),
                 explanation=caption.explanation,
-            )
+            ).to_dict()
         )
 
     # Trailing info/stats pages.

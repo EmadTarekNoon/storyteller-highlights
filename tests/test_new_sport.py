@@ -4,14 +4,13 @@ the core, the registry, or the viewer."""
 
 from __future__ import annotations
 
+from conftest import REPO_ROOT, make_basketball_feed
 from storybuilder.adapters import get_adapter
 from storybuilder.assets import Assets
 from storybuilder.profiles import available_sports, get_profile
 from storybuilder.profiles.basketball import BasketballProfile
 from storybuilder.story import build_story
 from storybuilder.validate import validate_story
-
-from conftest import REPO_ROOT, make_basketball_feed
 
 
 def _build(feed):

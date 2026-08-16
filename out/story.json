@@ -1,8 +1,8 @@
 {
-  "story_id": "story-0f1502f5a347",
+  "story_id": "story-35b20ad69c33",
   "title": "Celtic vs Kilmarnock",
   "source": "match_events.json",
-  "created_at": "2026-08-13T11:35:02Z",
+  "created_at": "2026-08-16T11:52:59Z",
   "metrics": {
     "final_score": {
       "home": 4,
@@ -124,7 +124,7 @@
       "explanation": "Goal at 92' made it Celtic 4-0 Kilmarnock."
     },
     {
-      "type": "info",
+      "type": "summary",
       "headline": "Full time",
       "home_team": "Celtic",
       "away_team": "Kilmarnock",

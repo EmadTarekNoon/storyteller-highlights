@@ -49,7 +49,12 @@ def test_goal_caption_has_minute_player_and_score():
     away = Team(id="A", name="Kilmarnock", home=False)
     match = Match(home=home, away=away, events=[], sport="Soccer")
     event = Event(
-        type="goal", period=1, minute=9, second=0, team=home, player="J. Kenny",
+        type="goal",
+        period=1,
+        minute=9,
+        second=0,
+        team=home,
+        player="J. Kenny",
         comment="Goal! Celtic 1, Kilmarnock 0. Johnny Kenny (Celtic) left footed shot.",
     )
     cap = profile.caption(event, Score(home=1, away=0), match)

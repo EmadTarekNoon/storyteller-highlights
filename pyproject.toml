@@ -15,10 +15,18 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest==8.3.3",
+    "ruff==0.6.9",
+    "black==24.10.0",
+    "httpx==0.27.2",
+]
+service = [
+    "fastapi==0.115.2",
+    "uvicorn==0.32.0",
 ]
 
 [project.scripts]
 storybuilder = "storybuilder.cli:main"
+storybuilder-serve = "storybuilder.service:run"
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -26,3 +34,16 @@ where = ["src"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+
+[tool.black]
+line-length = 110
+target-version = ["py310"]

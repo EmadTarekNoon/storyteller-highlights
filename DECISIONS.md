@@ -8,22 +8,33 @@ narrative, and emits a schema-valid Story (`out/story.json`). The design keeps a
 two small seams so it works for **any two teams** and can **scale to other
 sports**.
 
-## Architecture (two extension seams)
+## Architecture (swappable seams)
 - **`FeedAdapter` (`adapters/`)** — parses a raw provider feed into the internal
   `Match` model. `opta_soccer.py` absorbs this feed's quirks; a new provider is
-  just a new adapter. Selected via `--format` or auto-detection.
-- **`SportProfile` (`profiles/`)** — supplies sport semantics: scoring/running
-  score, ranking weights, must-include events, caption templates/terminology,
-  and info/stats pages. A registry picks a profile from the feed's
-  `sport.name`, falling back to a **`GenericProfile`** so an unknown sport still
-  yields a valid Story. `SoccerProfile` is the concrete implementation.
-  Profiles are **mostly declarative**: the base class turns class attributes
-  (`weights`, `scoring`, `must_include_types`, `terms`, …) into behaviour, so a
-  new sport is typically a ~10-line subclass (see `basketball.py`). All profiles
-  in the package are **auto-discovered/registered** — no registry list to edit.
+  just a new adapter, **auto-discovered** (no registry list). Selected via
+  `--format` or auto-detection (`priority`, then `can_parse`).
+- **`SportProfile` (`profiles/`)** — a **declarative bag of config** that wires
+  five swappable collaborators in `behaviors/`: `Scorer`, `Ranker`, `Narrator`,
+  `PageComposer`, `HighlightSelector`. The base class builds sensible defaults
+  from class attributes (`weights`, `scoring`, `must_include_types`, `terms`, …),
+  so a new sport is typically a ~10-line subclass (see `basketball.py`). Swap a
+  single collaborator for richer behaviour without touching the others —
+  `SoccerProfile` uses a `SoccerNarrator` + `SoccerComposer`; `GenericProfile`
+  uses a `NullScorer` + `KeywordRanker`. A registry picks a profile from the
+  feed's `sport.name` (auto-discovered; duplicate `handles` raise), falling back
+  to `GenericProfile`.
+- **Typed pages (`pages.py`)** — `cover`/`highlight`/`info`/`summary` are
+  dataclasses owning both their serialization and JSON-Schema fragment (a test
+  enforces builder↔schema parity).
+- **Externalized config (`config/<sport>.json`, `config.py`)** — data-driven
+  tuning applied over the declarative defaults.
+- **Orchestration (`app.py`)** — `build_story_from_feed(...)` is the single entry
+  point shared by the CLI (`cli.py`) and the optional FastAPI service
+  (`service.py`).
 - The **core** (`pipeline.py`, `story.py`, `validate.py`) and the **web viewer**
-  are entirely sport-agnostic — the viewer only knows about `cover`/`highlight`/
-  `info` pages, so new sports/teams need zero viewer changes.
+  are entirely sport-agnostic — the viewer renders pages through a **renderer
+  registry** keyed by page `type`, so new sports/teams (and new page types) need
+  minimal-to-zero viewer changes.
 
 ## Heuristic and ranking
 - Each event gets an importance **weight** from the profile (soccer: goal/penalty
@@ -59,22 +70,24 @@ sports**.
 ## Pack structure and invariants
 - Output fields: `story_id`, `title`, `source`, `created_at` (ISO-8601 UTC),
   `metrics` (final score, goal count, per-type counts), and `pages`.
-- Pages: exactly one `cover` first, chronological `highlight` pages, then an
-  `info` "Full time" summary page.
+- Pages: exactly one `cover` first, chronological `highlight` pages, then a
+  `summary` "Full time" page.
 - Invariants enforced by tests: first page is `cover`; highlights have
   int `minute` + `headline` + `caption`; highlight minutes are non-decreasing;
   running score is monotonic; all goals appear; the Story validates against the
   schema.
 
 ## Full-time summary page
-The closing `info` page carries a structured home-vs-away comparison
-(Goals, Shots, On target, Corners, Offsides, Fouls, Yellow cards) alongside a
-plain-text `body` fallback. The JSON Schema allows additional properties on
-`info` pages, so the extra fields (`home_team`, `home_score`, `stats`, …) keep
-the Story valid while letting the viewer render a scoreboard + stat bars.
+The closing page is a first-class **`summary`** page type (`pages.SummaryPage`),
+not an `info` page with magic keys. It carries a structured home-vs-away
+comparison (Goals, Shots, On target, Corners, Offsides, Fouls, Yellow cards)
+alongside a plain-text `body` fallback, and its fields (`home_team`,
+`home_score`, `stats`, …) are now formally described by the schema's `summary`
+branch (derived from the same dataclass), so the builder↔schema↔viewer contract
+is explicit rather than implicit.
 - **Declarative rows:** every sport (including soccer) defines its summary as a
-  tuple of `StatRow(label, types, attribute)`; a single base implementation
-  counts them, so no profile overrides `info_pages`.
+  tuple of `StatRow(label, types, attribute)`; the default `SummaryComposer`
+  counts them, so most sports need no composer override.
 - **Corner attribution fix:** in the source feed a `corner` event's `teamRef1`
   is the *conceding* team (e.g. "Corner, Kilmarnock. Conceded by … (Celtic)" has
   `teamRef1`=Celtic). We verified this from the data and express it declaratively

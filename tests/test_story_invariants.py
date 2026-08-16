@@ -2,13 +2,12 @@
 
 from __future__ import annotations
 
+from conftest import REPO_ROOT, make_generic_feed
 from storybuilder.adapters import get_adapter
 from storybuilder.assets import Assets
 from storybuilder.profiles import get_profile
 from storybuilder.story import build_story
 from storybuilder.validate import validate_story
-
-from conftest import REPO_ROOT, make_generic_feed
 
 
 def _build(feed, squads):

@@ -1,8 +1,8 @@
 {
-  "story_id": "story-9d089630cfce",
+  "story_id": "story-b1bc4b1d1699",
   "title": "Arsenal vs Liverpool",
   "source": "arsenal-liverpool.json",
-  "created_at": "2026-08-12T17:30:28Z",
+  "created_at": "2026-08-16T12:03:09Z",
   "metrics": {
     "final_score": {
       "home": 2,
@@ -118,7 +118,7 @@
       "explanation": "Goal at 88' made it Arsenal 2-2 Liverpool."
     },
     {
-      "type": "info",
+      "type": "summary",
       "headline": "Full time",
       "home_team": "Arsenal",
       "away_team": "Liverpool",

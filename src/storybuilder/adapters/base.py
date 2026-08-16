@@ -15,6 +15,8 @@ from ..models import Match
 class FeedAdapter(ABC):
     #: Stable identifier used by ``--format`` and the registry.
     name: str = ""
+    #: Auto-detection order (ascending); lower = tried first / more specific.
+    priority: int = 100
 
     @classmethod
     @abstractmethod

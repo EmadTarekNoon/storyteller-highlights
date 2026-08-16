@@ -99,50 +99,61 @@
   function next() { state.index < state.pages.length - 1 ? go(state.index + 1) : stopTimer(true); }
   function prev() { if (state.index > 0) go(state.index - 1); }
 
-  function render(page) {
-    var node = document.createElement("div");
-    node.className = "page " + (page.type || "highlight");
+  // Page types that render as a solid panel (no full-bleed photo behind them).
+  var PANEL_TYPES = { info: true, summary: true };
 
-    if (page.type !== "info") {
+  // Renderer registry: each entry populates a page's `content` element. Adding a
+  // new page type is just registering a renderer here (no edits to `render`).
+  var RENDERERS = {};
+  function registerRenderer(type, fn) { RENDERERS[type] = fn; }
+
+  function render(page) {
+    var type = page.type || "highlight";
+    var node = document.createElement("div");
+    node.className = "page " + type;
+
+    if (PANEL_TYPES[type]) {
+      node.appendChild(div("bg", ""));
+    } else {
       var bg = document.createElement("div");
       bg.className = "bg";
       if (page.image) applyImage(bg, ASSET_PREFIX + page.image);
       node.appendChild(bg);
-      var scrim = document.createElement("div");
-      scrim.className = "scrim";
-      node.appendChild(scrim);
-    } else {
-      var solid = document.createElement("div");
-      solid.className = "bg";
-      node.appendChild(solid);
+      node.appendChild(div("scrim", ""));
     }
 
     var content = document.createElement("div");
     content.className = "content";
-
-    if (page.type === "cover") {
-      content.appendChild(h1(page.headline));
-      if (page.subheadline) content.appendChild(div("sub", page.subheadline));
-    } else if (page.type === "info") {
-      renderInfo(content, page);
-    } else {
-      if (typeof page.minute === "number") {
-        content.appendChild(badge("minute", page.minute + "'"));
-      }
-      content.appendChild(h1(page.headline));
-      if (page.caption) content.appendChild(div("caption", page.caption));
-      if (page.explanation) content.appendChild(div("explain", page.explanation));
-    }
+    (RENDERERS[type] || RENDERERS.highlight)(content, page);
 
     node.appendChild(content);
     el.stage.innerHTML = "";
     el.stage.appendChild(node);
   }
 
-  // Info page: a full-time scoreboard + home-vs-away stat comparison when the
-  // structured fields are present; otherwise a simple text panel.
-  function renderInfo(content, page) {
+  registerRenderer("cover", function (content, page) {
+    content.appendChild(h1(page.headline));
+    if (page.subheadline) content.appendChild(div("sub", page.subheadline));
+  });
+
+  registerRenderer("highlight", function (content, page) {
+    if (typeof page.minute === "number") {
+      content.appendChild(badge("minute", page.minute + "'"));
+    }
+    content.appendChild(h1(page.headline));
+    if (page.caption) content.appendChild(div("caption", page.caption));
+    if (page.explanation) content.appendChild(div("explain", page.explanation));
+  });
+
+  // Generic free-text panel (narrative beats).
+  registerRenderer("info", function (content, page) {
     content.appendChild(div("kicker", page.headline || "Summary"));
+    if (page.body) content.appendChild(div("body", page.body));
+  });
+
+  // Full-time scoreboard + home-vs-away stat comparison.
+  registerRenderer("summary", function (content, page) {
+    content.appendChild(div("kicker", page.headline || "Full time"));
 
     if (page.home_team && page.away_team && typeof page.home_score === "number") {
       var board = document.createElement("div");
@@ -166,7 +177,7 @@
     } else if (page.body) {
       content.appendChild(div("body", page.body));
     }
-  }
+  });
 
   function teamCol(code, name) {
     var col = document.createElement("div");

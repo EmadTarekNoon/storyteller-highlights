@@ -40,9 +40,7 @@ def _reconcile_schema(schema: dict) -> dict:
     if "pack_id" not in required:
         return schema
     fixed = dict(schema)
-    fixed["required"] = [
-        "story_id" if key == "pack_id" else key for key in required
-    ]
+    fixed["required"] = ["story_id" if key == "pack_id" else key for key in required]
     return fixed
 
 

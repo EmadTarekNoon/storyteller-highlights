@@ -17,16 +17,16 @@ today; see `docs/FEATURES.md` "Add a new sport").
   `(period, minute, second)`.
 - **Effort:** ~10 lines / minutes for a basic sport; more for rich captions.
 
-## 2. Externalized events configuration
-Move the currently hardcoded soccer weights / must-include / caption phrasing
-into data so behaviour can be tuned without code changes.
-- **Where:** e.g. `config/soccer.yaml|json`; profiles load a config object.
-- **What's configurable:** per-event-type weights, must-include set, target
-  highlight count, noise types, caption templates, and which stats appear on the
-  summary page.
-- **Benefit:** non-developers can retune the narrative; A/B different heuristics;
-  brand-specific tuning per customer.
-- **Effort:** ~half a day (schema + loader + wire into profiles).
+## 2. Externalized events configuration — DONE (initial)
+Hardcoded soccer weights / must-include / scoring / summary rows can now be
+tuned via data instead of code.
+- **Where:** `config/<sport>.json` (loaded by `config.py`, applied on top of the
+  profile's declarative defaults; `config/soccer.json` ships at parity).
+- **What's configurable today:** per-event-type weights, must-include set,
+  target highlight count, noise types, scoring, terms, `score_label`, and the
+  summary rows.
+- **Still to do:** caption *template* strings (currently code), a JSON Schema
+  for the config file, and optional YAML support.
 
 ## 3. Deployment
 Make the builder and viewer easy to run in production.
@@ -38,13 +38,13 @@ Make the builder and viewer easy to run in production.
   against the schema on every push; optionally deploy the demo viewer.
 - **Effort:** ~half to one day.
 
-## 4. HTTP service mode
-Offer the builder as a small API in addition to the CLI.
-- **Endpoint:** `POST /stories` accepting a feed (+ optional squads / sport /
-  format) and returning the Story JSON; `GET /stories/{id}` to fetch.
-- **Where:** a thin `storybuilder.service` module reusing the existing pipeline.
-- **Benefit:** integrate directly with a live feed / the Storyteller platform.
-- **Effort:** ~half a day (FastAPI/Flask wrapper; logic already factored).
+## 4. HTTP service mode — DONE (initial)
+The builder is exposed as an API in addition to the CLI.
+- **Where:** `storybuilder.service` (FastAPI, `[service]` extra) reusing the
+  shared `app.build_story_from_feed` orchestration; run with `storybuilder-serve`.
+- **Endpoints today:** `POST /stories` (feed + optional squads / sport / format)
+  → Story JSON; `GET /healthz`.
+- **Still to do:** persistence + `GET /stories/{id}`, auth, and rate limiting.
 
 ## 5. Viewer experience upgrades
 - **Team branding:** club colours/crests driven by feed metadata (map contestant
@@ -70,10 +70,10 @@ Pass structured event data to an LLM to generate richer, more natural page
 content — headlines, captions, cover/subheadlines, and short narrative "info"
 beats (e.g. "how the half unfolded") — while keeping the deterministic templates
 as the guaranteed fallback.
-- **Where:** slots cleanly into the existing profile seam. Introduce a
-  `Narrator` abstraction with two implementations: `TemplateNarrator` (today's
-  deterministic logic) and `LLMNarrator` (calls a provider). The profile/pipeline
-  depends on the `Narrator` interface, not on how text is produced.
+- **Where:** the `Narrator` seam already exists (`behaviors/narration.py`, with
+  `TemplateNarrator` as today's deterministic default; soccer uses a
+  `SoccerNarrator`). Remaining work is just an `LLMNarrator` implementation that
+  calls a provider — the profile/pipeline already depend only on the interface.
 - **Input contract:** send the LLM a compact, typed payload per selected event
   (minute, type, team/player names, running score, source commentary) plus match
   context — never raw ids — so it has everything to write good copy.

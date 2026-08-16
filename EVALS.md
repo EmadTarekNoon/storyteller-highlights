@@ -33,11 +33,12 @@ all other rows use `attribute="acting"`. Sanity-checked against the sample match
 these counts is listed in `docs/ROADMAP.md`.
 
 ## When the LLM narrator lands
-Captions are deterministic today. The proposed optional `LLMNarrator`
-(`docs/ROADMAP.md`) is designed to be gated by exactly these checks — minute /
-player / score presence, length, and no hallucinated scoreline — and to fall
-back to the deterministic caption whenever a generated string fails, so quality
-never regresses below the template baseline.
+Captions are deterministic today, produced by the `TemplateNarrator`/
+`SoccerNarrator` behind the `Narrator` seam (`behaviors/narration.py`). An
+optional `LLMNarrator` would implement the same interface and be gated by exactly
+these checks — minute / player / score presence, length, and no hallucinated
+scoreline — falling back to the deterministic caption whenever a generated string
+fails, so quality never regresses below the template baseline.
 
 ## Before / after examples
 "Before" = the raw feed `comment`. "After" = the page the builder emits
